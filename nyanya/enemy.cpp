@@ -1,21 +1,29 @@
+#include <iostream>
+#include <string>
 #include "enemy.h"
 
-void enemyLoad(EnemyClass& enemy) {
-	if (enemy.enemyTexture.loadFromFile("assets/enemy/textures/enemyspritesheet.png")) {
+void Enemy::Initialize() {
+
+}
+
+void Enemy::Load() {
+	if (texture.loadFromFile("assets/enemy/textures/spritesheet.png")) {
 		std::cout << "enemy image loaded\n";
-		enemy.enemySprite.setTexture(enemy.enemyTexture);
+		sprite.setTexture(texture);
 		int xIndex = 0;
 		int yIndex = 0;
-		enemy.enemySprite.setTextureRect(sf::IntRect(xIndex * 64, yIndex * 64, 64, 64));
-		enemy.enemySprite.scale(sf::Vector2f(3, 3));
+		sprite.setTextureRect(sf::IntRect(xIndex * 64, yIndex * 64, 64, 64));
+		sprite.scale(sf::Vector2f(3, 3));
 	}
 	else {
 		std::cout << "enemy image didnt load\n";
 	}
 }
-void enemyMove(EnemyClass& enemy) {
+
+void Enemy::Update() {
 
 }
-void enemyDraw(EnemyClass& enemy, sf::RenderWindow& window) {
-	window.draw(enemy.enemySprite);
+
+void Enemy::Draw(sf::RenderWindow& window) {
+	window.draw(sprite);
 }
