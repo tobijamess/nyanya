@@ -11,8 +11,6 @@
 #include "projectile.h"
 
 int main() {
-		// -------------------------------------------------------------------------- INIT --------------------------------------------------------------------------
-	
 	// settings object
 	sf::ContextSettings settings;
 	// antialiasing level, can be 2, 4, or 8
@@ -22,28 +20,35 @@ int main() {
 	// repeats button press if the button is held (inside the window)
 	window.setKeyRepeatEnabled(false);
 
-		// -------------------------------------------------------------------------- INIT --------------------------------------------------------------------------
-	
-		// -------------------------------------------------------------------------- LOAD --------------------------------------------------------------------------
 
 	// initialize player object
 	Player player;
+	Projectile projectile;
+	Enemy enemy;
+
+	// initalize sprite size and hitbox
+	player.Initialize();
 	// call player.cpp function that loads player info (sprites, textures, position in window etc.)
 	player.Load();
 
-	Projectile projectile;
-	projectile.Load();
-
-	Enemy enemy;
+	enemy.Initialize();
 	enemy.Load();
 
+	projectile.Initialize();
+	projectile.Load();
 
-		// -------------------------------------------------------------------------- LOAD --------------------------------------------------------------------------
+	// clock object initalization to use for getting the time each frame takes to render
+	sf::Clock clock;
 
 	// game loop
 	while (window.isOpen()) {
 
-		// ------------------------------------------------------------------------- UPDATE -------------------------------------------------------------------------
+		// restart the timer at the beginning of every window frame
+		sf::Time timer = clock.restart();
+		// display time for each frame in console in milliseconds
+		//std::cout << timer.asSeconds() << std::endl;
+		// store the timer value in deltaTime variable for use in other functions (player.Update() etc.)
+		float deltaTime = timer.asSeconds();
 
 		// 'event' object of type 'Event' class
 		sf::Event event;
@@ -55,14 +60,14 @@ int main() {
 			}
 		}
 
+
+
 		// call Update function through player object
-		player.Update();
-		enemy.Update();
-		projectile.Update(window, player);
+		player.Update(enemy, deltaTime);
+		enemy.Update(deltaTime);
+		projectile.Update(window, player, deltaTime);
 
-		// ------------------------------------------------------------------------- UPDATE -------------------------------------------------------------------------
 
-		// -------------------------------------------------------------------------- DRAW --------------------------------------------------------------------------
 
 		// clears window/screen each frame
 		window.clear(sf::Color::Black);
@@ -74,7 +79,5 @@ int main() {
 
 		// copy frame from back buffer to window/screen
 		window.display();
-
-		// -------------------------------------------------------------------------- DRAW --------------------------------------------------------------------------
 	}
 }

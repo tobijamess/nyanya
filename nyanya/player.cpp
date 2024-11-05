@@ -3,26 +3,32 @@
 #include "util.h"
 
 void Player::Initialize() {
-
+	// initialize and set the size of playerSprite and boundingBox to 64x64 (pixel size of sprite)
+	size = sf::Vector2i(64, 64);
+	// initialize/set features for the boundingRectangle(hitbox)
+	boundingRectangle.setFillColor(sf::Color::Transparent);
+	boundingRectangle.setOutlineColor(sf::Color::Red);
+	boundingRectangle.setOutlineThickness(1);
 }
 
 // function to load player stuff like sprites, set default sprite position for movement etc.
 // pass Player object as parameter to access Player members and change them
 void Player::Load() {
-	// load texture from file into temptexture object
-	if (texture.loadFromFile("assets/player/textures/spritesheet.png")) {
+	// load texture from file into texture object
+	if (texture.loadFromFile("assets/player/textures/playerspritesheet.png")) {
 		// successful load
 		std::cout << "player image loaded\n";
-		// set temptexture object equal to
 		// use setTexture function to set the sprite to texture (which holds the .png)
 		sprite.setTexture(texture);
 		// function to put rectangle (sf::IntRect) over the pixels you want to select for drawing within the texture by setting x, y and width/height (all integers)
 		// xIndex is sprite position in the row, yIndex is sprite position in column, is multiplied by 64 so the rectangle can move over/down 1 sprite at a time
 		// all player sprites are 64x64 so rectWidth and rectHeight stay at 64, 64
-		sprite.setTextureRect(sf::IntRect(xIndex * 64, yIndex * 64, 64, 64));
+		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
+		sprite.setPosition(sf::Vector2f(800, 500));
 		// multiplies the current scale of sprite object (make sprite bigger)
 		sprite.scale(sf::Vector2f(3, 3));
-		sprite.setPosition(sf::Vector2f(800, 500));
+		// set hitbox size to same size as sprite (64x64px) and multiply by a smaller scale (2), not sprite.getScale() to make it closer to actual sprite size
+		boundingRectangle.setSize(sf::Vector2f(size.x * sprite.getScale().x, size.y * sprite.getScale().y));
 	}
 	else {
 		// failed load
@@ -33,21 +39,37 @@ void Player::Load() {
 
 // function to take player input and change position of player sprite based on input
 // pass Player object as parameter to access Player members and change them
-void Player::Update() {
-	// create vector2f object ('position', which takes x, y) to store the value (x, y) of sprite.getPosition which is by default 0,0 (top left of window)
-	sf::Vector2f position = sprite.getPosition();
-	// read the realtime keyboard, check if a key was pressed, if the key pressed was 'W', run the code
+void Player::Update(Enemy& enemy, float deltaTime) {
+
+	// create movement vector2f to store the values produced by the keyboard presses which are based on the x and y axis
+	sf::Vector2f movement(0.0f, 0.0f);
+	// check each of the movement keys for presses and adjust the movement vector2f
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		sprite.setPosition(position + sf::Vector2f(0.00f, -0.1f));
+		// movement.y = movement.y - 1.0f
+		movement.y -= 1.0f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		sprite.setPosition(position + sf::Vector2f(-0.1f, 0.00f));
+		movement.x -= 1.0f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		sprite.setPosition(position + sf::Vector2f(0.00f, 0.1f));
+		movement.y += 1.0f;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) { 
-		sprite.setPosition(position + sf::Vector2f(0.1f, 0.00f));
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		movement.x += 1.0f;
+	}
+	// condition ensures that normalization only happens if there actually is movement
+	if (movement.x != 0.0f || movement.y != 0.0f) {
+		// normalize the movement vector
+        movement = Util::normalizeVector(movement);
+    }
+	// set sprites position
+	sprite.setPosition(sprite.getPosition() + movement * playerSpeed * deltaTime);
+
+	// set boundingRectangle (hitbox) to sprites position so it always follows player
+	boundingRectangle.setPosition(sprite.getPosition());
+	// check for collision
+	if (Util::rectCollision(sprite.getGlobalBounds(), enemy.sprite.getGlobalBounds())) {
+		std::cout << "collision working\n";
 	}
 }
 
@@ -56,4 +78,5 @@ void Player::Update() {
 void Player::Draw(sf::RenderWindow& window) {
 	// draw the sprite to window, only sprites can be drawn not textures
 	window.draw(sprite);
+	window.draw(boundingRectangle);
 }

@@ -8,15 +8,22 @@
 class Projectile
 {
 public:
-	// create objects to be used in all the playerProjectile functions
-	std::vector<sf::RectangleShape> playerProjectiles;
+	// struct to store every new projectile and its' set direction
+	struct ProjectileData {
+		sf::RectangleShape projectile;
+		sf::Vector2f direction;
+	};
+	// Vector2f to store each projectiles final direction
 	sf::Vector2f projectileDirection;
-	float projectileSpeed = 0.5f;
 private:
+	// create stdlib vector to store list of instanciated structs which hold each new projectile and its' direction
+	std::vector<ProjectileData> playerProjectiles;
+	// set projectile speed
+	float projectileSpeed = 1200.0f;
 public:
 	void Initialize();
 	void Load();
-	void Update(sf::RenderWindow& window, Player& player);
+	void Update(sf::RenderWindow& window, Player& player, float deltaTime);
 	void Draw(sf::RenderWindow& window);
 private:
 };

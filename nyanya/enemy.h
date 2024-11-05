@@ -1,3 +1,4 @@
+#pragma	once
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -7,21 +8,19 @@
 // see player.h for commenting
 class Enemy {
 public:
-	std::string enemyName = "enemyName";
-	int enemyHealth = 100;
-	int enemyDamage = 0;
-	float enemyAttackSpeed = 0.0f;
-
 	int xIndex = 0;
 	int yIndex = 0;
 
 	sf::Sprite sprite;
+	sf::RectangleShape boundingRectangle;
+	sf::Vector2i size;
 private:
+	float enemySpeed = 150.0f;
 	sf::Texture texture;
 public:
 	void Initialize();
 	void Load();
-	void Update();
+	void Update(float deltaTime);
 	void Draw(sf::RenderWindow& window);
 private:
 };

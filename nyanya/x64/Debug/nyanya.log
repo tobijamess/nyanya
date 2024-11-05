@@ -1,7 +1,2 @@
-﻿  enemy.cpp
-  main.cpp
-  player.cpp
-  projectile.cpp
-F:\Repos\nyanya\nyanya\projectile.cpp(25,9): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
+﻿  player.cpp
   nyanya.vcxproj -> F:\Repos\nyanya\x64\Debug\nyanya.exe
