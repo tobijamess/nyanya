@@ -24,6 +24,8 @@ int main() {
 	// initialize player object
 	Player player;
 	Projectile projectile;
+	//test
+
 	Enemy enemy;
 
 	// initalize sprite size and hitbox

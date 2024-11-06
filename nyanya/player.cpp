@@ -27,7 +27,7 @@ void Player::Load() {
 		sprite.setPosition(sf::Vector2f(800, 500));
 		// multiplies the current scale of sprite object (make sprite bigger)
 		sprite.scale(sf::Vector2f(3, 3));
-		// set hitbox size to same size as sprite (64x64px) and multiply by a smaller scale (2), not sprite.getScale() to make it closer to actual sprite size
+		// set hitbox size to same size as sprite (64x64px) and multiply by sprite.getScale() so it scales with the sprite image
 		boundingRectangle.setSize(sf::Vector2f(size.x * sprite.getScale().x, size.y * sprite.getScale().y));
 	}
 	else {
@@ -47,15 +47,33 @@ void Player::Update(Enemy& enemy, float deltaTime) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		// movement.y = movement.y - 1.0f
 		movement.y -= 1.0f;
+		// set the sprite state based on keypressed
+		currentSpriteState = Up;
+		xIndex = 0;
+		yIndex = 3;
+		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		movement.x -= 1.0f;
+		currentSpriteState = Left;
+		xIndex = 0;
+		yIndex = 1;
+		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		movement.y += 1.0f;
+
+		currentSpriteState = Down;
+		xIndex = 0;
+		yIndex = 0;
+		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		movement.x += 1.0f;
+		currentSpriteState = Right;
+		xIndex = 0;
+		yIndex = 2;
+		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	// condition ensures that normalization only happens if there actually is movement
 	if (movement.x != 0.0f || movement.y != 0.0f) {

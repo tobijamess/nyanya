@@ -2,20 +2,31 @@
 #include "util.h"
 
 void Projectile::Initialize() {
-
+	projSize = sf::Vector2i(544, 352);
+	// initialize/set features for the boundingRectangle(hitbox)
+	boundingRectangle.setFillColor(sf::Color::Transparent);
+	boundingRectangle.setOutlineColor(sf::Color::Red);
+	boundingRectangle.setOutlineThickness(1);
 }
 
 void Projectile::Load() {
 	// create vector2f projectileDirection object so it is loaded outside of the game loop (so it doesn't reset every single frame)
 	sf::Vector2f projectileDirection;
+
+	if (texture.loadFromFile("assets/player/projectiles/fireball.png")) {
+		std::cout << "projectile image loaded\n";
+		sprite.setTexture(texture);
+		// multiplies the current scale of sprite object (make sprite bigger)
+		sprite.scale(sf::Vector2f(0.1f, 0.1f));
+	}
 }
 
 void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTime) {
 	// if left mouse button is pressed, execute following code
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 
-		// create a new rectangle variable (newProjectile)
-		sf::RectangleShape newProjectile(sf::Vector2f(50, 25));
+		// create a new sprite variable (newProjectile)
+		sf::Sprite newProjectile = sprite;
 		// set the newProjectile variable to the players sprite positon
 		newProjectile.setPosition(player.sprite.getPosition());
 		
@@ -29,6 +40,10 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTim
 		Util util;
 		// use util.cpp normalizeVector() function to normalize the vector2f that stores the (target - current) result
 		initialDirection = util.normalizeVector(initialDirection);
+		// use util.cpp calculateRotation() function to get the rotation angle from the normalized direction vector
+		float rotation = Util::calculateRotation(initialDirection);
+		// set the sprites rotation to the calculateRotation() functions result
+		sprite.setRotation(rotation);
 		// push newProjectile (rectangle variable) and its' intialDirection into the vector of structs
 		playerProjectiles.push_back({ newProjectile, initialDirection });
 	}
@@ -46,7 +61,7 @@ void Projectile::Draw(sf::RenderWindow& window) {
 	// for loop to draw each new projectile that gets added to the list during the Update() function 
 	for (size_t i = 0; i < playerProjectiles.size(); i++)
 	{
-		// draws most recent playerProjectiles element
+		// draws most recently added playerProjectiles element
 		window.draw(playerProjectiles[i].projectile);
 	}
 }

@@ -1,5 +1,6 @@
 #pragma	once
 #include <string>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -21,6 +22,16 @@ public:
 	// player speed value
 	float playerSpeed = 500.0f;
 private:
+	enum SpriteState
+	{
+		Left,
+		Right,
+		Up,
+		Down,
+	};
+
+	SpriteState currentSpriteState = Down; 
+
 
 	// create texture object to hold .png image
 	sf::Texture texture;

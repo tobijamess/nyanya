@@ -1,2 +1,4 @@
-﻿  player.cpp
+﻿  projectile.cpp
+  util.cpp
+  Generating Code...
   nyanya.vcxproj -> F:\Repos\nyanya\x64\Debug\nyanya.exe
