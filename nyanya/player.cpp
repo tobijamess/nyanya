@@ -5,10 +5,18 @@
 void Player::Initialize() {
 	// initialize and set the size of playerSprite and boundingBox to 64x64 (pixel size of sprite)
 	size = sf::Vector2i(64, 64);
-	// initialize/set features for the boundingRectangle(hitbox)
-	boundingRectangle.setFillColor(sf::Color::Transparent);
-	boundingRectangle.setOutlineColor(sf::Color::Red);
-	boundingRectangle.setOutlineThickness(1);
+	// initialize/set features for the hitbox(circleshape)
+	hitbox.setFillColor(sf::Color::Transparent);
+	hitbox.setOutlineColor(sf::Color::Red);
+	hitbox.setOutlineThickness(1);
+	// set radius to half player sprite size so diameter is same as sprite's height and width (64x64)
+	hitbox.setRadius(32);
+	// getLocalBounds returns the x and y coordinate of the top left of the sprite (origin point) and the width and height of the sprite (64x64)
+	sf::FloatRect bounds = sprite.getLocalBounds();
+	// bounds.width and height are divided by 2 to find the center of the sprite image
+	sf::Vector2f centerOffset((bounds.width / 2), (bounds.height / 2));
+	// set position of the circle hitbox to sprites position (add the centerOffset result so the hitbox is positioned around where the visual image is, not the sprites origin point coordinates)
+	hitbox.setPosition(sprite.getPosition() + centerOffset);
 }
 
 // function to load player stuff like sprites, set default sprite position for movement etc.
@@ -27,8 +35,6 @@ void Player::Load() {
 		sprite.setPosition(sf::Vector2f(800, 500));
 		// multiplies the current scale of sprite object (make sprite bigger)
 		sprite.scale(sf::Vector2f(3, 3));
-		// set hitbox size to same size as sprite (64x64px) and multiply by sprite.getScale() so it scales with the sprite image
-		boundingRectangle.setSize(sf::Vector2f(size.x * sprite.getScale().x, size.y * sprite.getScale().y));
 	}
 	else {
 		// failed load
@@ -39,7 +45,7 @@ void Player::Load() {
 
 // function to take player input and change position of player sprite based on input
 // pass Player object as parameter to access Player members and change them
-void Player::Update(Enemy& enemy, float deltaTime) {
+void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 
 	// create movement vector2f to store the values produced by the keyboard presses which are based on the x and y axis
 	sf::Vector2f movement(0.0f, 0.0f);
@@ -47,30 +53,26 @@ void Player::Update(Enemy& enemy, float deltaTime) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		// movement.y = movement.y - 1.0f
 		movement.y -= 1.0f;
-		// set the sprite state based on keypressed
-		currentSpriteState = Up;
+		// get sprite index for each movement direction
 		xIndex = 0;
 		yIndex = 3;
+		// set the sprite state based on keypressed
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		movement.x -= 1.0f;
-		currentSpriteState = Left;
 		xIndex = 0;
 		yIndex = 1;
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		movement.y += 1.0f;
-
-		currentSpriteState = Down;
 		xIndex = 0;
 		yIndex = 0;
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		movement.x += 1.0f;
-		currentSpriteState = Right;
 		xIndex = 0;
 		yIndex = 2;
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
@@ -78,15 +80,14 @@ void Player::Update(Enemy& enemy, float deltaTime) {
 	// condition ensures that normalization only happens if there actually is movement
 	if (movement.x != 0.0f || movement.y != 0.0f) {
 		// normalize the movement vector
-        movement = Util::normalizeVector(movement);
-    }
+		movement = Util::normalizeVector(movement);
+	}
 	// set sprites position
 	sprite.setPosition(sprite.getPosition() + movement * playerSpeed * deltaTime);
-
-	// set boundingRectangle (hitbox) to sprites position so it always follows player
-	boundingRectangle.setPosition(sprite.getPosition());
+	// set hitbox to sprites position so it always follows player
+	hitbox.setPosition(sprite.getPosition() + centerOffset);
 	// check for collision
-	if (Util::rectCollision(sprite.getGlobalBounds(), enemy.sprite.getGlobalBounds())) {
+	if (Util::collisionDetection(player, enemy)) {
 		std::cout << "collision working\n";
 	}
 }
@@ -96,5 +97,5 @@ void Player::Update(Enemy& enemy, float deltaTime) {
 void Player::Draw(sf::RenderWindow& window) {
 	// draw the sprite to window, only sprites can be drawn not textures
 	window.draw(sprite);
-	window.draw(boundingRectangle);
+	window.draw(hitbox);
 }

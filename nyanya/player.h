@@ -16,29 +16,19 @@ public:
 	// create sprite object to turn image into a sprite which can be moved, rotated, scaled etc.
 	sf::Sprite sprite;
 	// create boundingRectangle shape to use as hitbox
-	sf::RectangleShape boundingRectangle;
+	sf::CircleShape hitbox;
 	// set width and height for player sprite
 	sf::Vector2i size;
 	// player speed value
 	float playerSpeed = 500.0f;
 private:
-	enum SpriteState
-	{
-		Left,
-		Right,
-		Up,
-		Down,
-	};
-
-	SpriteState currentSpriteState = Down; 
-
-
 	// create texture object to hold .png image
 	sf::Texture texture;
+	sf::Vector2f centerOffset;
 public:
 	void Initialize();
 	void Load();
-	void Update(Enemy& enemy, float deltaTime);
+	void Update(Player& player, Enemy& enemy, float deltaTime);
 	void Draw(sf::RenderWindow& window);
 private:
 

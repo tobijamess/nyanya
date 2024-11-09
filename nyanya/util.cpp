@@ -16,17 +16,33 @@ sf::Vector2f Util::normalizeVector(sf::Vector2f vector) {
 }
 
 // function to check collision between two different rectangles (check paint for explanation)
-bool Util::rectCollision(sf::FloatRect rect1, sf::FloatRect rect2) {
-	if (rect1.left + rect1.width > rect2.left &&
-		rect2.left + rect1.width > rect1.left &&
-		rect2.top + rect2.height > rect1.top &&
-		rect1.top + rect1.height > rect2.top) {
+//bool Util::rectCollision(sf::FloatRect rect1, sf::FloatRect rect2) {
+//	if (rect1.left + rect1.width > rect2.left &&
+//		rect2.left + rect1.width > rect1.left &&
+//		rect2.top + rect2.height > rect1.top &&
+//		rect1.top + rect1.height > rect2.top) {
+//		return true;
+//	}
+//	else {
+//		return false;
+//	}
+//}
+
+// collision detection for circle hitbox
+bool Util::collisionDetection(Player& player, Enemy& enemy) {
+	sf::Vector2f direction;
+	// target - current to find direction vector pointing from player to enemy origin point (use getPosition() because getOrigin() is a relative point within the shape not coordinates)
+	direction = enemy.hitbox.getPosition() - player.hitbox.getPosition();
+	// get magnitude or m by getting the square root of direction.x^2 + direction.y^2 (magnitude is the length)
+	float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+	// if m (length) less than or equal to 64, collision is happening (because I set both circles radius to 32)
+	if (m <= 64) {
 		return true;
 	}
 	else {
 		return false;
 	}
-} 
+}
 
 // function to calculate the rotation based on the normalizedVector returned by the normalizeVector() function
 float Util::calculateRotation(sf::Vector2f vector) {

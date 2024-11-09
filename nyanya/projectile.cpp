@@ -29,7 +29,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTim
 		sf::Sprite newProjectile = sprite;
 		// set the newProjectile variable to the players sprite positon
 		newProjectile.setPosition(player.sprite.getPosition());
-		
+
 		// create temp vector2f mousePosition object for vector2i -> vector2f conversion
 		// use static_cast to forcefully convert the vector2i's data (current mouse position) into the temporary mousePosition vector2f object
 		sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
@@ -52,7 +52,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTim
 	{
 		// set position of the most recently added projectile to it's own stored position + it's direction and multiply it by speed and deltaTime to move it
 		playerProjectiles[i].projectile.setPosition(
-			playerProjectiles[i].projectile.getPosition() + 
+			playerProjectiles[i].projectile.getPosition() +
 			playerProjectiles[i].direction * projectileSpeed * deltaTime);
 	}
 }

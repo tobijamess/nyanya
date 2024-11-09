@@ -12,7 +12,7 @@ public:
 	int yIndex = 0;
 
 	sf::Sprite sprite;
-	sf::RectangleShape boundingRectangle;
+	sf::CircleShape hitbox;
 	sf::Vector2i size;
 private:
 	float enemySpeed = 150.0f;

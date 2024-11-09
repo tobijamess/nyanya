@@ -65,7 +65,7 @@ int main() {
 
 
 		// call Update function through player object
-		player.Update(enemy, deltaTime);
+		player.Update(player, enemy, deltaTime);
 		enemy.Update(deltaTime);
 		projectile.Update(window, player, deltaTime);
 
