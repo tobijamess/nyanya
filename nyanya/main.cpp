@@ -16,7 +16,7 @@ int main() {
 	// antialiasing level, can be 2, 4, or 8
 	settings.antialiasingLevel = 8;
 	// create sfml window
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Game Window", sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode(1280, 720), "Game Window", sf::Style::Default);
 	// repeats button press if the button is held (inside the window)
 	window.setKeyRepeatEnabled(false);
 

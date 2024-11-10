@@ -2,6 +2,14 @@
 #include "player.h"
 #include "util.h"
 
+// function to combine all player movement variables as well as pushback on collision
+void Player::move(const sf::Vector2f& offset) {
+	// adjust the sprite position based on the offset (regular movement or pushback)
+	sprite.setPosition(sprite.getPosition() + offset);
+	// Update hitbox position to match the sprite
+	hitbox.setPosition(sprite.getPosition());
+}
+
 void Player::Initialize() {
 	// initialize and set the size of playerSprite and boundingBox to 64x64 (pixel size of sprite)
 	size = sf::Vector2i(64, 64);
@@ -11,15 +19,11 @@ void Player::Initialize() {
 	hitbox.setOutlineThickness(1);
 	// set radius to half player sprite size so diameter is same as sprite's height and width (64x64)
 	hitbox.setRadius(32);
-	// getLocalBounds returns the x and y coordinate of the top left of the sprite (origin point) and the width and height of the sprite (64x64)
-	sf::FloatRect bounds = sprite.getLocalBounds();
-	// bounds.width and height are divided by 2 to find the center of the sprite image
-	sf::Vector2f centerOffset((bounds.width / 2), (bounds.height / 2));
-	// set position of the circle hitbox to sprites position (add the centerOffset result so the hitbox is positioned around where the visual image is, not the sprites origin point coordinates)
-	hitbox.setPosition(sprite.getPosition() + centerOffset);
+	// set origin of hitbox to the center of the sprite image, not the sprite origin
+	hitbox.setOrigin(-64, -64);
 }
 
-// function to load player stuff like sprites, set default sprite position for movement etc.
+// function to load player stuff like sprites, set default sprite position for movemsent etc.
 // pass Player object as parameter to access Player members and change them
 void Player::Load() {
 	// load texture from file into texture object
@@ -46,9 +50,9 @@ void Player::Load() {
 // function to take player input and change position of player sprite based on input
 // pass Player object as parameter to access Player members and change them
 void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
-
 	// create movement vector2f to store the values produced by the keyboard presses which are based on the x and y axis
 	sf::Vector2f movement(0.0f, 0.0f);
+	
 	// check each of the movement keys for presses and adjust the movement vector2f
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		// movement.y = movement.y - 1.0f
@@ -82,12 +86,12 @@ void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 		// normalize the movement vector
 		movement = Util::normalizeVector(movement);
 	}
-	// set sprites position
-	sprite.setPosition(sprite.getPosition() + movement * playerSpeed * deltaTime);
+	// call move function with all movement and collision variables taken into account
+	move(movement * playerSpeed * deltaTime);
 	// set hitbox to sprites position so it always follows player
-	hitbox.setPosition(sprite.getPosition() + centerOffset);
+	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 	// check for collision
-	if (Util::collisionDetection(player, enemy)) {
+	if (Util::collisionDirection(player, enemy)) {
 		std::cout << "collision working\n";
 	}
 }

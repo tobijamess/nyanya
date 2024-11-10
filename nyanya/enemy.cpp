@@ -7,8 +7,8 @@ void Enemy::Initialize() {
 	hitbox.setFillColor(sf::Color::Transparent);
 	hitbox.setOutlineColor(sf::Color::Blue);
 	hitbox.setOutlineThickness(1);
-	hitbox.setOrigin(sprite.getPosition());
 	hitbox.setRadius(32);
+	hitbox.setOrigin(-64, -64);
 }
 
 void Enemy::Load() {
@@ -27,7 +27,7 @@ void Enemy::Load() {
 }
 
 void Enemy::Update(float deltaTime) {
-	hitbox.setPosition(sprite.getPosition());
+	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 }
 
 void Enemy::Draw(sf::RenderWindow& window) {

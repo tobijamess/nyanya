@@ -15,19 +15,6 @@ sf::Vector2f Util::normalizeVector(sf::Vector2f vector) {
 	return normalizedVector;
 }
 
-// function to check collision between two different rectangles (check paint for explanation)
-//bool Util::rectCollision(sf::FloatRect rect1, sf::FloatRect rect2) {
-//	if (rect1.left + rect1.width > rect2.left &&
-//		rect2.left + rect1.width > rect1.left &&
-//		rect2.top + rect2.height > rect1.top &&
-//		rect1.top + rect1.height > rect2.top) {
-//		return true;
-//	}
-//	else {
-//		return false;
-//	}
-//}
-
 // collision detection for circle hitbox
 bool Util::collisionDetection(Player& player, Enemy& enemy) {
 	sf::Vector2f direction;
@@ -44,6 +31,31 @@ bool Util::collisionDetection(Player& player, Enemy& enemy) {
 	}
 }
 
+// PUSHBACK NEEDS FIXING CURRENTLY CAN TELEPORT PLAYER SPRITE WHEN THEY COLLIDE???
+// collision direction and pushback (opposite force that is applied when two hitboxes collide)
+bool Util::collisionDirection(Player& player, Enemy& enemy) {
+	sf::Vector2f direction;
+	// if collisionDetection returned true, execute code
+	if (Util::collisionDetection(player, enemy)) {
+		// get direction vector (target - current)
+		direction = enemy.hitbox.getPosition() - player.hitbox.getPosition();
+		// get magnitude (m)
+		float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+		// normalize direction vector
+		direction = Util::normalizeVector(direction);
+		// if m is not equal to 0, execute code (don't want to divide by 0)
+		if (m != 0.0f) {
+			direction.x /= m;
+			direction.y /= m;
+		}
+		// set force of pushback from collision direction
+		float force = 1000.0f;
+		// move hitbox in opposite direction of collision
+		player.move(direction * force);
+		return true;
+	}
+}
+
 // function to calculate the rotation based on the normalizedVector returned by the normalizeVector() function
 float Util::calculateRotation(sf::Vector2f vector) {
 	// use atan2 instead of atan because atan assumes that both x and y are of the same sign (positive or negative) which means the angle will be limited to a 180° range
@@ -53,3 +65,16 @@ float Util::calculateRotation(sf::Vector2f vector) {
 	float degrees = radians * (180.0f / 3.14159265359f);
 	return degrees;
 }
+
+// function to check collision between two different rectangles (check paint for explanation)
+//bool Util::rectCollision(sf::FloatRect rect1, sf::FloatRect rect2) {
+//	if (rect1.left + rect1.width > rect2.left &&
+//		rect2.left + rect1.width > rect1.left &&
+//		rect2.top + rect2.height > rect1.top &&
+//		rect1.top + rect1.height > rect2.top) {
+//		return true;
+//	}
+//	else {
+//		return false;
+//	}
+//}

@@ -21,6 +21,8 @@ public:
 	sf::Vector2i size;
 	// player speed value
 	float playerSpeed = 500.0f;
+	
+	
 private:
 	// create texture object to hold .png image
 	sf::Texture texture;
@@ -30,6 +32,7 @@ public:
 	void Load();
 	void Update(Player& player, Enemy& enemy, float deltaTime);
 	void Draw(sf::RenderWindow& window);
+	void move(const sf::Vector2f& offset);
 private:
 
 };
