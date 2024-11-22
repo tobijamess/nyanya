@@ -31,30 +31,47 @@ bool Util::collisionDetection(Player& player, Enemy& enemy) {
 	}
 }
 
-// PUSHBACK NEEDS FIXING CURRENTLY CAN TELEPORT PLAYER SPRITE WHEN THEY COLLIDE???
 // collision direction and pushback (opposite force that is applied when two hitboxes collide)
-bool Util::collisionDirection(Player& player, Enemy& enemy) {
+bool Util::collision(Player& player, Enemy& enemy, float deltaTime, bool isMoving) {
+	// initalize direction vector
 	sf::Vector2f direction;
-	// if collisionDetection returned true, execute code
+	// Check if collision is occurring
 	if (Util::collisionDetection(player, enemy)) {
-		// get direction vector (target - current)
+		// target - current to find direction vector
 		direction = enemy.hitbox.getPosition() - player.hitbox.getPosition();
-		// get magnitude (m)
-		float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-		// normalize direction vector
+		// get the maginute (length) between player and enemy and store in distance variable
+		float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+		// normalize the direction vector
 		direction = Util::normalizeVector(direction);
-		// if m is not equal to 0, execute code (don't want to divide by 0)
-		if (m != 0.0f) {
-			direction.x /= m;
-			direction.y /= m;
+		// minimum distance which the player and enemy need to be kept apart at (sum of the player + enemy hitbox radius)
+		float collisionBoundary = 64.0f; 
+		// multiply direction by collisionBoundary to get a 64 length vector (direction has length of 1 because it was normalized) that points from enemys center point out toward player
+		// subtracting the resulting vector from enemy.hitbox.getPosition() places boundaryPosition exactly at 64 units away from the enemies center in the opposite direction of the player
+		sf::Vector2f boundaryPosition = enemy.hitbox.getPosition() - direction * collisionBoundary;
+		// if distance between player and enemy is less than the boundary, re-position the player at boundaryPosition which is exactly 64 units away from the enemy center point
+		if (distance < collisionBoundary) {
+			player.hitbox.setPosition(boundaryPosition);
+			player.sprite.setPosition(boundaryPosition);
+		}  
+		// if player is moving, allow sliding along the boundary
+		if (isMoving) {
+			// calculate the tangent vector for sliding around the boundary (tangent vector is a vector perpandicular to direction)
+			// tangent vector is rotated 90 degrees by swapping directions x and y values and negating one of them (hence -y, x instead of the normal x, y)
+			sf::Vector2f tangent(-direction.y, direction.x);
+			sf::Vector2f slideAround = tangent * player.playerSpeed * deltaTime;
+			player.move(slideAround);
 		}
-		// set force of pushback from collision direction
-		float force = 1000.0f;
-		// move hitbox in opposite direction of collision
-		player.move(direction * force);
 		return true;
 	}
+	return false;
 }
+
+//bool Util::projCollision(Projectile& projectile, Enemy& enemy, float deltaTime) {
+//	sf::Vector2f direction;
+//	if (Util::collisionDetection(projectile, enemy)) {
+//
+//	}
+//}
 
 // function to calculate the rotation based on the normalizedVector returned by the normalizeVector() function
 float Util::calculateRotation(sf::Vector2f vector) {

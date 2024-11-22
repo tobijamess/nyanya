@@ -15,12 +15,13 @@ public:
 	int yIndex = 0;
 	// create sprite object to turn image into a sprite which can be moved, rotated, scaled etc.
 	sf::Sprite sprite;
-	// create boundingRectangle shape to use as hitbox
+	// create circle shape to use as hitbox
 	sf::CircleShape hitbox;
 	// set width and height for player sprite
 	sf::Vector2i size;
 	// player speed value
 	float playerSpeed = 500.0f;
+	bool isMoving;
 	
 	
 private:

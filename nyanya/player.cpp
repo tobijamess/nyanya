@@ -2,16 +2,16 @@
 #include "player.h"
 #include "util.h"
 
-// function to combine all player movement variables as well as pushback on collision
+// function to combine all player movement variables as well as collision
 void Player::move(const sf::Vector2f& offset) {
-	// adjust the sprite position based on the offset (regular movement or pushback)
+	// adjust the sprite position based on the offset
 	sprite.setPosition(sprite.getPosition() + offset);
 	// Update hitbox position to match the sprite
 	hitbox.setPosition(sprite.getPosition());
 }
 
 void Player::Initialize() {
-	// initialize and set the size of playerSprite and boundingBox to 64x64 (pixel size of sprite)
+	// initialize and set the size of playerSprite to 64x64 (pixel size of sprite)
 	size = sf::Vector2i(64, 64);
 	// initialize/set features for the hitbox(circleshape)
 	hitbox.setFillColor(sf::Color::Transparent);
@@ -86,12 +86,16 @@ void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 		// normalize the movement vector
 		movement = Util::normalizeVector(movement);
 	}
+	// bool variable to check if the player is moving for use in util.cpp collision function
+	bool isMoving = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+					 sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::D));
+
 	// call move function with all movement and collision variables taken into account
 	move(movement * playerSpeed * deltaTime);
 	// set hitbox to sprites position so it always follows player
 	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 	// check for collision
-	if (Util::collisionDirection(player, enemy)) {
+	if (Util::collision(player, enemy, deltaTime, isMoving)) {
 		std::cout << "collision working\n";
 	}
 }

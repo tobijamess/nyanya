@@ -24,20 +24,22 @@ int main() {
 	// initialize player object
 	Player player;
 	Projectile projectile;
-	//test
-
 	Enemy enemy;
+
+
 
 	// initalize sprite size and hitbox
 	player.Initialize();
 	// call player.cpp function that loads player info (sprites, textures, position in window etc.)
 	player.Load();
 
+	projectile.Initialize();
+	projectile.Load(player);
+
 	enemy.Initialize();
 	enemy.Load();
 
-	projectile.Initialize();
-	projectile.Load();
+
 
 	// clock object initalization to use for getting the time each frame takes to render
 	sf::Clock clock;

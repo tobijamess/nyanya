@@ -10,7 +10,7 @@ public:
 	static sf::Vector2f normalizeVector(sf::Vector2f vector);
 	static float calculateRotation(sf::Vector2f vector);
 	static bool collisionDetection(Player& player, Enemy& enemy);
-	// test
-	static bool collisionDirection(Player& player, Enemy& enemy);
+	static bool collision(Player& player, Enemy& enemy, float deltaTime, bool isMoving);
+	//static bool projCollision(Projectile& projectile, Enemy& enemy, float deltaTime);
 private:
 };
