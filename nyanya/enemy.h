@@ -1,4 +1,5 @@
-#pragma	once
+#ifndef ENEMY_H
+#define ENEMY_H
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
@@ -24,3 +25,4 @@ public:
 	void Draw(sf::RenderWindow& window);
 private:
 };
+#endif 

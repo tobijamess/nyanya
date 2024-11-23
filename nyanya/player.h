@@ -1,4 +1,5 @@
-#pragma	once
+#ifndef PLAYER_H
+#define PLAYER_H
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -37,3 +38,4 @@ public:
 private:
 
 };
+#endif

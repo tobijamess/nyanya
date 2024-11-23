@@ -8,10 +8,14 @@ void Projectile::Initialize() {
 	projData.hitbox.setFillColor(sf::Color::Transparent);
 	projData.hitbox.setOutlineColor(sf::Color::Red);
 	projData.hitbox.setOutlineThickness(1);
-	// projectile hitbox radius set to the scaled down width / 2 so the diameter matches the size of the sprite (322 x 0.1) / 2 = 16.7
-	projData.hitbox.setRadius(16.7f);
-	projData.hitbox.setOrigin(27.7f, 16.7f);
-	
+	// set the hitbox radius to match the scaled fireball size
+	float scaleFactor = 0.1f; // both X and Y scaling factors are the same
+	float scaledWidth = projSize.x * scaleFactor; // width of the scaled fireball
+	float scaledHeight = projSize.y * scaleFactor; // height of the scaled fireball
+	float hitboxRadius = std::max(scaledWidth, scaledHeight) / 3.0f; // use max dimension
+	projData.hitbox.setRadius(hitboxRadius);
+	// center the hitbox by setting the origin to its radius
+	projData.hitbox.setOrigin(hitboxRadius, hitboxRadius);
 }
 
 void Projectile::Load(Player& player) {
@@ -24,16 +28,19 @@ void Projectile::Load(Player& player) {
 		sf::Vector2f scaleFactor = sf::Vector2f(0.1f, 0.1f);
 		// set the actual sprite scale to scaleFactor vector
 		sprite.scale(scaleFactor);
-		// create spriteSize vector object to store the visible sprite size to be able to find the center
-		sf::Vector2f spriteSize = sf::Vector2f(projSize.x * scaleFactor.x, projSize.y * scaleFactor.y);
-		// find center by getting half of the images x pixels and y pixels and set sprite origin to center of that image
-		sprite.setOrigin(spriteSize.x / 2, spriteSize.y / 2);
+		// set the origin of the sprite to the center of the original texture
+		sprite.setOrigin(static_cast<float>(projSize.x) / 2.0f,
+			static_cast<float>(projSize.y) / 2.0f);
 	}
 }
 
-void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTime) {
-	// if left mouse button is pressed, execute following code
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, float deltaTime) {
+	// update cooldown timer which adds a cooldown to how quickly projectiles can be created
+	timeSinceLastProjectile += deltaTime;
+	// if left mouse button is pressed, and the time since the last projectile was created is longer than the cooldown, execute following code
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && timeSinceLastProjectile >= cooldown) {
+		// reset the timer
+		timeSinceLastProjectile = 0.0f; 
 		// create a new sprite variable (newProjectile)
 		sf::Sprite newProjectile = sprite;
 		// set the newProjectile variable to the players sprite positon
@@ -58,8 +65,8 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTim
 		float rotation = Util::calculateRotation(initialDirection);
 		// set the sprites rotation to the calculateRotation() functions result
 		sprite.setRotation(rotation);
-		// push newProjectile (rectangle variable) and its' intialDirection into the vector of structs
-		playerProjectiles.push_back({ newHitbox, newProjectile, initialDirection });
+		// push newProjectile and its' intialDirection into the vector of structs along with its hitbox and lifetime
+		playerProjectiles.push_back({ newHitbox, newProjectile, initialDirection, 3.0f });
 	}
 	// updates the position of each individual projectile based on it's direction stored in the playerProjectiles
 	for (size_t i = 0; i < playerProjectiles.size(); i++)
@@ -70,6 +77,11 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, float deltaTim
 			playerProjectiles[i].direction * projectileSpeed * deltaTime);
 		// set each projectile elements' hitbox to their sprites' position
 		playerProjectiles[i].hitbox.setPosition(playerProjectiles[i].projectile.getPosition());
+		// collision detection
+		if (Util::collisionDetection(playerProjectiles[i].hitbox, enemy.hitbox)) {
+			// collision working
+			std::cout << "Projectile Collision Working!\n";
+		}
 	}
 	
 }

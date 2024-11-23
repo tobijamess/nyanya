@@ -15,7 +15,7 @@ sf::Vector2f Util::normalizeVector(sf::Vector2f vector) {
 	return normalizedVector;
 }
 
-// collision detection for circle hitbox
+// player -> enemy collision detection
 bool Util::collisionDetection(Player& player, Enemy& enemy) {
 	sf::Vector2f direction;
 	// target - current to find direction vector pointing from player to enemy origin point (use getPosition() because getOrigin() is a relative point within the shape not coordinates)
@@ -23,16 +23,29 @@ bool Util::collisionDetection(Player& player, Enemy& enemy) {
 	// get magnitude or m by getting the square root of direction.x^2 + direction.y^2 (magnitude is the length)
 	float m = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 	// if m (length) less than or equal to 64, collision is happening (because I set both circles radius to 32)
-	if (m <= 64) {
-		return true;
+	// check if the distance is less than or equal to the sum of the radii
+	float combinedRadius = player.hitbox.getRadius() + enemy.hitbox.getRadius();
+	if (m <= combinedRadius) {
+		return true; // Collision detected
 	}
 	else {
 		return false;
 	}
 }
 
+// projectile -> enemy collision detection
+bool Util::collisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox) {
+	// calculate direction vector from the projectile's hitbox center to the enemy's hitbox center
+	sf::Vector2f direction = enemyHitbox.getPosition() - projHitbox.getPosition();
+	// calculate magnitude of the direction vector
+	float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+	// check if the distance is less than or equal to the sum of the radii
+	float combinedRadius = projHitbox.getRadius() + enemyHitbox.getRadius();
+	return distance <= combinedRadius; // return true if collision detected
+}
+
 // collision direction and pushback (opposite force that is applied when two hitboxes collide)
-bool Util::collision(Player& player, Enemy& enemy, float deltaTime, bool isMoving) {
+bool Util::playerCollision(Player& player, Enemy& enemy, float deltaTime, bool isMoving) {
 	// initalize direction vector
 	sf::Vector2f direction;
 	// Check if collision is occurring
@@ -66,13 +79,6 @@ bool Util::collision(Player& player, Enemy& enemy, float deltaTime, bool isMovin
 	return false;
 }
 
-//bool Util::projCollision(Projectile& projectile, Enemy& enemy, float deltaTime) {
-//	sf::Vector2f direction;
-//	if (Util::collisionDetection(projectile, enemy)) {
-//
-//	}
-//}
-
 // function to calculate the rotation based on the normalizedVector returned by the normalizeVector() function
 float Util::calculateRotation(sf::Vector2f vector) {
 	// use atan2 instead of atan because atan assumes that both x and y are of the same sign (positive or negative) which means the angle will be limited to a 180° range
@@ -82,16 +88,3 @@ float Util::calculateRotation(sf::Vector2f vector) {
 	float degrees = radians * (180.0f / 3.14159265359f);
 	return degrees;
 }
-
-// function to check collision between two different rectangles (check paint for explanation)
-//bool Util::rectCollision(sf::FloatRect rect1, sf::FloatRect rect2) {
-//	if (rect1.left + rect1.width > rect2.left &&
-//		rect2.left + rect1.width > rect1.left &&
-//		rect2.top + rect2.height > rect1.top &&
-//		rect1.top + rect1.height > rect2.top) {
-//		return true;
-//	}
-//	else {
-//		return false;
-//	}
-//}

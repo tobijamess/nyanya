@@ -1,3 +1,5 @@
+#ifndef PROJECTILE_H
+#define PROJECTILE_H
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -15,8 +17,9 @@ public:
 	// size vector to get size of texture png in pixels
 	sf::Vector2i projSize;
 
-	float firerate;
-	float firerateTimer;
+	// timer to prevent too many projectiles being created every frame
+	float cooldown = 0.25f;
+	float timeSinceLastProjectile = 0.0f;
 
 
 	// struct to store every new projectile and its' set direction
@@ -24,6 +27,7 @@ public:
 		sf::CircleShape hitbox;
 		sf::Sprite projectile;
 		sf::Vector2f direction;
+		float lifetime;
 	};
 	// struct object to access struct variables in projectile.cpp functions
 	ProjectileData projData;
@@ -39,7 +43,14 @@ private:
 public:
 	void Initialize();
 	void Load(Player& player);
-	void Update(sf::RenderWindow& window, Player& player, float deltaTime);
+	void Update(sf::RenderWindow& window, Player& player, Enemy& enemy, float deltaTime);
 	void Draw(sf::RenderWindow& window);
+
+	// getter for vector of instanciated structs to use in collision detection
+	const std::vector<Projectile::ProjectileData>& getPlayerProjectiles() const {
+		return playerProjectiles;
+	}
+
 private:
 };
+#endif

@@ -95,7 +95,7 @@ void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 	// set hitbox to sprites position so it always follows player
 	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 	// check for collision
-	if (Util::collision(player, enemy, deltaTime, isMoving)) {
+	if (Util::playerCollision(player, enemy, deltaTime, isMoving)) {
 		std::cout << "collision working\n";
 	}
 }
