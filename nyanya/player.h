@@ -34,7 +34,7 @@ public:
 	void Load();
 	void Update(Player& player, Enemy& enemy, float deltaTime);
 	void Draw(sf::RenderWindow& window);
-	void move(const sf::Vector2f& offset);
+	void Move(const sf::Vector2f& offset);
 private:
 
 };

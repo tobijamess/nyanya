@@ -47,7 +47,7 @@ public:
 	void Draw(sf::RenderWindow& window);
 
 	// getter for vector of instanciated structs to use in collision detection
-	const std::vector<Projectile::ProjectileData>& getPlayerProjectiles() const {
+	const std::vector<Projectile::ProjectileData>& GetPlayerProjectiles() const {
 		return playerProjectiles;
 	}
 

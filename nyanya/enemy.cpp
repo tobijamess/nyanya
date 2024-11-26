@@ -7,8 +7,8 @@ void Enemy::Initialize() {
 	hitbox.setFillColor(sf::Color::Transparent);
 	hitbox.setOutlineColor(sf::Color::Blue);
 	hitbox.setOutlineThickness(1);
-	hitbox.setRadius(32);
-	hitbox.setOrigin(-64, -64);
+	hitbox.setRadius(16);
+	hitbox.setOrigin(-16, -16);
 }
 
 void Enemy::Load() {
@@ -19,7 +19,7 @@ void Enemy::Load() {
 		int yIndex = 0;
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 		sprite.setPosition(300, 200);
-		sprite.scale(sf::Vector2f(3, 3));
+		sprite.scale(sf::Vector2f(1, 1));
 	}
 	else {
 		std::cout << "enemy image didnt load\n";

@@ -10,13 +10,13 @@
 class Util {
 public:
 	/*static bool rectCollision(sf::FloatRect rect1, sf::FloatRect rect2);*/
-	static sf::Vector2f normalizeVector(sf::Vector2f vector);
-	static float calculateRotation(sf::Vector2f vector);
+	static sf::Vector2f NormalizeVector(sf::Vector2f vector);
+	static float CalculateRotation(sf::Vector2f vector);
 	// collision detection functions
-	static bool collisionDetection(Player& player, Enemy& enemy);
-	static bool collisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox);
+	static bool CollisionDetection(Player& player, Enemy& enemy);
+	static bool CollisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox);
 	// collision outcome functions
-	static bool playerCollision(Player& player, Enemy& enemy, float deltaTime, bool isMoving);
+	static bool PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool isMoving);
 private:
 };
 #endif

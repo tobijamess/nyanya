@@ -3,16 +3,16 @@
 
 void Projectile::Initialize() {
 	// initialize projectile size (size of image in pixels)
-	projSize = sf::Vector2i(554, 322);	
+	projSize = sf::Vector2i(64, 64);	
 	// initialize/set features for the hitbox(hitbox)
 	projData.hitbox.setFillColor(sf::Color::Transparent);
 	projData.hitbox.setOutlineColor(sf::Color::Red);
 	projData.hitbox.setOutlineThickness(1);
 	// set the hitbox radius to match the scaled fireball size
-	float scaleFactor = 0.1f; // both X and Y scaling factors are the same
+	float scaleFactor = 1.0f; // both X and Y scaling factors are the same
 	float scaledWidth = projSize.x * scaleFactor; // width of the scaled fireball
 	float scaledHeight = projSize.y * scaleFactor; // height of the scaled fireball
-	float hitboxRadius = std::max(scaledWidth, scaledHeight) / 3.0f; // use max dimension
+	float hitboxRadius = std::max(scaledWidth, scaledHeight) / 4.0f; // use max dimension
 	projData.hitbox.setRadius(hitboxRadius);
 	// center the hitbox by setting the origin to its radius
 	projData.hitbox.setOrigin(hitboxRadius, hitboxRadius);
@@ -25,12 +25,14 @@ void Projectile::Load(Player& player) {
 		std::cout << "projectile image loaded\n";
 		sprite.setTexture(texture);
 		// scaleFactor vector scales down the sprite to * 0.1 of its original size
-		sf::Vector2f scaleFactor = sf::Vector2f(0.1f, 0.1f);
+		sf::Vector2f scaleFactor = sf::Vector2f(0.25f, 0.25f);
 		// set the actual sprite scale to scaleFactor vector
 		sprite.scale(scaleFactor);
 		// set the origin of the sprite to the center of the original texture
 		sprite.setOrigin(static_cast<float>(projSize.x) / 2.0f,
 			static_cast<float>(projSize.y) / 2.0f);
+		// FIX THIS
+		sprite.setPosition(player.sprite.getOrigin().x / 64, player.sprite.getOrigin().y / 64);
 	}
 }
 
@@ -60,9 +62,9 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		// create util object for normalize vector function
 		Util util;
 		// use util.cpp normalizeVector() function to normalize the vector2f that stores the (target - current) result
-		initialDirection = util.normalizeVector(initialDirection);
+		initialDirection = util.NormalizeVector(initialDirection);
 		// use util.cpp calculateRotation() function to get the rotation angle from the normalized direction vector
-		float rotation = Util::calculateRotation(initialDirection);
+		float rotation = Util::CalculateRotation(initialDirection);
 		// set the sprites rotation to the calculateRotation() functions result
 		sprite.setRotation(rotation);
 		// push newProjectile and its' intialDirection into the vector of structs along with its hitbox and lifetime
@@ -78,7 +80,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		// set each projectile elements' hitbox to their sprites' position
 		playerProjectiles[i].hitbox.setPosition(playerProjectiles[i].projectile.getPosition());
 		// collision detection
-		if (Util::collisionDetection(playerProjectiles[i].hitbox, enemy.hitbox)) {
+		if (Util::CollisionDetection(playerProjectiles[i].hitbox, enemy.hitbox)) {
 			// collision working
 			std::cout << "Projectile Collision Working!\n";
 		}

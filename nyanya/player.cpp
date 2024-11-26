@@ -3,10 +3,11 @@
 #include "util.h"
 
 // function to combine all player movement variables as well as collision
-void Player::move(const sf::Vector2f& offset) {
+void Player::Move(const sf::Vector2f& offset) {
 	// adjust the sprite position based on the offset
 	sprite.setPosition(sprite.getPosition() + offset);
 	// Update hitbox position to match the sprite
+	// ??? MAYBE ADD OFFSET HERE
 	hitbox.setPosition(sprite.getPosition());
 }
 
@@ -17,10 +18,10 @@ void Player::Initialize() {
 	hitbox.setFillColor(sf::Color::Transparent);
 	hitbox.setOutlineColor(sf::Color::Red);
 	hitbox.setOutlineThickness(1);
-	// set radius to half player sprite size so diameter is same as sprite's height and width (64x64)
-	hitbox.setRadius(32);
+	// set radius to quarter player sprite size
+	hitbox.setRadius(16);
 	// set origin of hitbox to the center of the sprite image, not the sprite origin
-	hitbox.setOrigin(-64, -64);
+	hitbox.setOrigin(-16, -16);
 }
 
 // function to load player stuff like sprites, set default sprite position for movemsent etc.
@@ -38,7 +39,7 @@ void Player::Load() {
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 		sprite.setPosition(sf::Vector2f(800, 500));
 		// multiplies the current scale of sprite object (make sprite bigger)
-		sprite.scale(sf::Vector2f(3, 3));
+		sprite.scale(sf::Vector2f(1, 1));
 	}
 	else {
 		// failed load
@@ -84,18 +85,18 @@ void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 	// condition ensures that normalization only happens if there actually is movement
 	if (movement.x != 0.0f || movement.y != 0.0f) {
 		// normalize the movement vector
-		movement = Util::normalizeVector(movement);
+		movement = Util::NormalizeVector(movement);
 	}
 	// bool variable to check if the player is moving for use in util.cpp collision function
 	bool isMoving = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
 					 sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::D));
 
 	// call move function with all movement and collision variables taken into account
-	move(movement * playerSpeed * deltaTime);
+	Move(movement * playerSpeed * deltaTime);
 	// set hitbox to sprites position so it always follows player
 	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
 	// check for collision
-	if (Util::playerCollision(player, enemy, deltaTime, isMoving)) {
+	if (Util::PlayerCollision(player, enemy, deltaTime, isMoving)) {
 		std::cout << "collision working\n";
 	}
 }
