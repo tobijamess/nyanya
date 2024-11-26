@@ -59,8 +59,8 @@ void Game::UpdatePlay(float deltaTime) {
 }
 
 // update functions for gamestate 'level editor'
-void Game::UpdateLevelEditor(Game& game) {
-    levelEdit.Update(window, game);
+void Game::UpdateLevelEditor() {
+    levelEdit.Update(window, *this);
 }
 
 void Game::GameModeSelect() {
@@ -96,8 +96,10 @@ void Game::Run() {
         switch (gameMode) {
         case Play:
             UpdatePlay(deltaTime);
+            break;
         case LevelEditor:
-            UpdateLevelEditor(*this);
+            UpdateLevelEditor();
+            break;
         }
         Render();
     }
@@ -109,12 +111,13 @@ void Game::Render() {
     // determine what is drawn to the application window based on game states
     if (gameMode == Play) {
         // calling draw functions to literally draw the sprite or shape to the render window
+        levelEdit.Draw(window, *this);
         player.Draw(window);
         enemy.Draw(window);
         projectile.Draw(window);
     }
     else if (gameMode == LevelEditor) {
-        levelEdit.Draw(window);
+        levelEdit.Draw(window, *this);
     }
 	// copy frame from back buffer to window/screen
     window.display();

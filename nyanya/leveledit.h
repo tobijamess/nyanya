@@ -12,18 +12,18 @@ class Game;
 
 class LevelEdit {
 public:
+	void CreateTile(const sf::Vector2f& position);
+	void RemoveTile(const sf::Vector2f& position);
+	void Initialize(Game& game);
+	void Load();
+	void Update(sf::RenderWindow& window, Game& game);
+	void Draw(sf::RenderWindow& window, Game& game);
+private:
 	int tileOptionIndex;
 	sf::Texture texture;
 	// vector of tiles themselves
 	std::vector<sf::Sprite> tiles;
 	// vector of different tile images to choose from
 	std::vector<sf::Sprite> tileOptions;
-	void CreateTile(const sf::Vector2f& position);
-	void RemoveTile(const sf::Vector2f& position);
-	void Initialize(Game& game);
-	void Load();
-	void Update(sf::RenderWindow& window, Game& game);
-	void Draw(sf::RenderWindow& window);
-private:
 };
 #endif

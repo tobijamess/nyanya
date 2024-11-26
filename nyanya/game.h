@@ -23,6 +23,10 @@ public:
         None
     };
     ScrollWheel scrollWheelInput;
+    // getter function for use in leveledit.cpp's Update() function
+    GameMode getGameMode() const { 
+        return gameMode;
+    }
 private:
     sf::RenderWindow window;
     sf::Clock clock;
@@ -31,15 +35,15 @@ private:
     Enemy enemy;
     Projectile projectile;
     LevelEdit levelEdit;
+
+    // enum object to initialize gamemodes
+    GameMode gameMode;
     
     void Initialize();
     void ProcessEvents();
     void UpdatePlay(float deltaTime);
-    void UpdateLevelEditor(Game& game);
+    void UpdateLevelEditor();
     void GameModeSelect();
     void Render();
-
-    // enum object to initialize gamemodes
-    GameMode gameMode;
 };
 #endif
