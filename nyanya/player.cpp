@@ -7,7 +7,6 @@ void Player::Move(const sf::Vector2f& offset) {
 	// adjust the sprite position based on the offset
 	sprite.setPosition(sprite.getPosition() + offset);
 	// Update hitbox position to match the sprite
-	// ??? MAYBE ADD OFFSET HERE
 	hitbox.setPosition(sprite.getPosition());
 }
 
@@ -18,10 +17,13 @@ void Player::Initialize() {
 	hitbox.setFillColor(sf::Color::Transparent);
 	hitbox.setOutlineColor(sf::Color::Red);
 	hitbox.setOutlineThickness(1);
-	// set radius to quarter player sprite size
-	hitbox.setRadius(16);
-	// set origin of hitbox to the center of the sprite image, not the sprite origin
-	hitbox.setOrigin(-16, -16);
+	float scaleFactor = 1.0f; // both X and Y scaling factors are the same
+	float scaledWidth = size.x * scaleFactor; // width of the scaled fireball
+	float scaledHeight = size.y * scaleFactor; // height of the scaled fireball
+	float hitboxRadius = std::max(scaledWidth, scaledHeight) / 2.0f; // use max dimension
+	hitbox.setRadius(hitboxRadius);
+	// set origin of hitbox to the center of the sprite image
+	hitbox.setOrigin(hitboxRadius, hitboxRadius);
 }
 
 // function to load player stuff like sprites, set default sprite position for movemsent etc.
@@ -39,7 +41,10 @@ void Player::Load() {
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 		sprite.setPosition(sf::Vector2f(800, 500));
 		// multiplies the current scale of sprite object (make sprite bigger)
-		sprite.scale(sf::Vector2f(1, 1));
+		sf::Vector2f scaleFactor = sf::Vector2f(3.0f, 3.0f);
+		sprite.setScale(scaleFactor);
+		sprite.setOrigin(static_cast<float>(size.x) / 2.0f,
+			static_cast<float>(size.y) / 2.0f);
 	}
 	else {
 		// failed load

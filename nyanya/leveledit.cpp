@@ -109,6 +109,24 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
 void LevelEdit::Draw(sf::RenderWindow& window, Game& game) {
 	// loop to validate size of tileOptions vector before setting values like positions
 	if (game.getGameMode() == Game::LevelEditor && !tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
+		// size of each grid section to match tile size
+		const int tileSize = 64;
+		const sf::Vector2u windowSize = window.getSize();
+		// use vertex to create horizontal and vertical lines in the game window
+		sf::VertexArray grid(sf::Lines);
+		// create vertical lines by iterating through the width and height of the window, adding vertices for vertical and horizontal lines spaced at tileSize (64px) intervals
+		// then append the vertex's to the 'grid' vertex array
+		for (int x = 0; x <= windowSize.x; x += tileSize) {
+			grid.append(sf::Vertex(sf::Vector2f(x, 0), sf::Color(100, 100, 100)));
+			grid.append(sf::Vertex(sf::Vector2f(x, windowSize.y), sf::Color(100, 100, 100)));
+		}
+		// create horizontal lines
+		for (int y = 0; y <= windowSize.y; y += tileSize) {
+			grid.append(sf::Vertex(sf::Vector2f(0, y), sf::Color(100, 100, 100)));
+			grid.append(sf::Vertex(sf::Vector2f(windowSize.x, y), sf::Color(100, 100, 100)));
+		}
+		// draw full vertex array grid
+		window.draw(grid);
 		// get mouse pos within game window
 		sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
 		// set position of selected tile (tileoption index) to the mouse position

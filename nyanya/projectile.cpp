@@ -25,14 +25,14 @@ void Projectile::Load(Player& player) {
 		std::cout << "projectile image loaded\n";
 		sprite.setTexture(texture);
 		// scaleFactor vector scales down the sprite to * 0.1 of its original size
-		sf::Vector2f scaleFactor = sf::Vector2f(0.25f, 0.25f);
+		sf::Vector2f scaleFactor = sf::Vector2f(0.5f, 0.5f);
 		// set the actual sprite scale to scaleFactor vector
 		sprite.scale(scaleFactor);
 		// set the origin of the sprite to the center of the original texture
 		sprite.setOrigin(static_cast<float>(projSize.x) / 2.0f,
 			static_cast<float>(projSize.y) / 2.0f);
 		// FIX THIS
-		sprite.setPosition(player.sprite.getOrigin().x / 64, player.sprite.getOrigin().y / 64);
+		/*sprite.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y);*/
 	}
 }
 
@@ -46,7 +46,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		// create a new sprite variable (newProjectile)
 		sf::Sprite newProjectile = sprite;
 		// set the newProjectile variable to the players sprite positon
-		newProjectile.setPosition(player.sprite.getPosition());
+		newProjectile.setPosition(player.sprite.getPosition().x + player.sprite.getScale().x, player.sprite.getPosition().y + player.sprite.getScale().y);
 
 		// create new rectangle 'newHitbox' for each individual projectile stored in the struct
 		sf::CircleShape newHitbox = projData.hitbox;

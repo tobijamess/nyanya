@@ -54,7 +54,7 @@ void Game::ProcessEvents() {
 // update functions for gamestate 'play'
 void Game::UpdatePlay(float deltaTime) {
     player.Update(player, enemy, deltaTime);
-    enemy.Update(deltaTime);
+    enemy.Update(deltaTime, player.sprite.getPosition());
     projectile.Update(window, player, enemy, deltaTime);
 }
 
@@ -93,6 +93,7 @@ void Game::Run() {
         // store the timer value in deltaTime variable for use in other functions (player.Update() etc.)
         float deltaTime = clock.restart().asSeconds();
         GameModeSelect();
+        // switch cases for switching between gamemodes based on GameModeSelect() function result
         switch (gameMode) {
         case Play:
             UpdatePlay(deltaTime);

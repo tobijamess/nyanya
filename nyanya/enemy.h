@@ -18,11 +18,19 @@ public:
 private:
 	float enemySpeed = 150.0f;
 	sf::Texture texture;
+	float detectionRadius = 300.0f;
+	sf::CircleShape detectionCircle;
+	float attackRadius = 100.0f;
+	sf::CircleShape attackCircle;
 public:
 	void Initialize();
 	void Load();
-	void Update(float deltaTime);
+	void Update(float deltaTime, const sf::Vector2f& playerPos);
 	void Draw(sf::RenderWindow& window);
+
+	void SetDetectionRadius(float radius);
+	void SetAttackRadius(float radius);
+	bool IsPlayerInRange(const sf::Vector2f& playerPos, float radius);
 private:
 };
 #endif 

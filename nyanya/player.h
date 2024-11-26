@@ -24,7 +24,6 @@ public:
 	float playerSpeed = 500.0f;
 	bool isMoving;
 	
-	
 private:
 	// create texture object to hold .png image
 	sf::Texture texture;
