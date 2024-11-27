@@ -31,22 +31,25 @@ void Enemy::Initialize() {
 	attackCircle.setOutlineThickness(1);
 }
 
-void Enemy::Load() {
-	// see player.cpp for comments
-	if (texture.loadFromFile("assets/enemy/textures/enemyspritesheet.png")) {
-		std::cout << "enemy image loaded\n";
-		sprite.setTexture(texture);
-		int xIndex = 0;
-		int yIndex = 0;
-		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
-		sprite.setPosition(300, 200);
-		sf::Vector2f scaleFactor = sf::Vector2f(3.0f, 3.0f);
-		sprite.setScale(scaleFactor);
-		sprite.setOrigin(static_cast<float>(size.x) / 2.0f,
-			static_cast<float>(size.y) / 2.0f);
-	}
-	else {
-		std::cout << "enemy image didnt load\n";
+void Enemy::Load(Type type) {
+	type == Type::Basic;
+	if (type == Type::Basic) {
+		// see player.cpp for comments
+		if (texture.loadFromFile("assets/enemy/textures/enemyspritesheet.png")) {
+			std::cout << "enemy image loaded\n";
+			sprite.setTexture(texture);
+			int xIndex = 0;
+			int yIndex = 0;
+			sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
+			sprite.setPosition(300, 200);
+			sf::Vector2f scaleFactor = sf::Vector2f(3.0f, 3.0f);
+			sprite.setScale(scaleFactor);
+			sprite.setOrigin(static_cast<float>(size.x) / 2.0f,
+				static_cast<float>(size.y) / 2.0f);
+		}
+		else {
+			std::cout << "enemy image didnt load\n";
+		}
 	}
 }
 

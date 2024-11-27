@@ -17,6 +17,7 @@ public:
 	static bool CollisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox);
 	// collision outcome functions
 	static bool PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool isMoving);
+	static bool ProjectileCollision(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox);
 private:
 };
 #endif

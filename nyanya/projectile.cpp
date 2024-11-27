@@ -55,7 +55,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		
 		// create temp vector2f mousePosition object for vector2i -> vector2f conversion
 		// use static_cast to forcefully convert the vector2i's data (current mouse position) into the temporary mousePosition vector2f object
-		sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+		sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 		// create new vector2f object (initialDirection) to store the direction of the projectile based on the result of the equation: target (mousePosition) - current (player.sprite.getPosition())
 		sf::Vector2f initialDirection = mousePosition - player.sprite.getPosition();
@@ -80,12 +80,15 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		// set each projectile elements' hitbox to their sprites' position
 		playerProjectiles[i].hitbox.setPosition(playerProjectiles[i].projectile.getPosition());
 		// collision detection
-		if (Util::CollisionDetection(playerProjectiles[i].hitbox, enemy.hitbox)) {
+		if (Util::ProjectileCollision(playerProjectiles[i].hitbox, enemy.hitbox)) {
 			// collision working
 			std::cout << "Projectile Collision Working!\n";
+			// set i'th player projectile to the back of the list
+			playerProjectiles[i] = playerProjectiles.back();
+			// erase i'th projectile from the back of the list
+			playerProjectiles.pop_back();
 		}
 	}
-	
 }
 
 void Projectile::Draw(sf::RenderWindow& window) {

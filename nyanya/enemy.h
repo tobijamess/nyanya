@@ -9,12 +9,18 @@
 // see player.h for commenting
 class Enemy {
 public:
+	// placeholder enemy types
+	enum class Type { Basic, Advanced, Boss};
 	int xIndex = 0;
 	int yIndex = 0;
-
 	sf::Sprite sprite;
 	sf::CircleShape hitbox;
 	sf::Vector2i size;
+	Type type;
+	// getter func for function call params
+	Type GetType() {
+		return type;
+	}
 private:
 	float enemySpeed = 150.0f;
 	sf::Texture texture;
@@ -24,12 +30,12 @@ private:
 	sf::CircleShape attackCircle;
 public:
 	void Initialize();
-	void Load();
+	void Load(Type type);
 	void Update(float deltaTime, const sf::Vector2f& playerPos);
 	void Draw(sf::RenderWindow& window);
 
-	void SetDetectionRadius(float radius);
-	void SetAttackRadius(float radius);
+	/*void SetDetectionRadius(float radius);
+	void SetAttackRadius(float radius);*/
 	bool IsPlayerInRange(const sf::Vector2f& playerPos, float radius);
 private:
 };

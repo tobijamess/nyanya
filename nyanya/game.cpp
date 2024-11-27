@@ -1,4 +1,5 @@
 #include "game.h"
+
 // game constructor
 Game::Game()
     : window(sf::VideoMode(1280, 720), "Game Window")
@@ -13,6 +14,8 @@ Game::~Game() {
 }
 
 void Game::Initialize() {
+    // initialize tilemap with its size (50x50 of 64x64 tiles)
+    tilemap.Initialize(50, 50);
     // pass this instance of Game instead of creating a Game object and passing that, since that would create a new instance and cause infinite loop
     levelEdit.Initialize(*this);
     levelEdit.Load();
@@ -22,9 +25,15 @@ void Game::Initialize() {
 	// initialize and load projectile data
     projectile.Initialize();
     projectile.Load(player);
+    // initialize and load enemymanager data
+    enemymanager.Initialize(GetTileMap(), enemymanager.GetMaxEnemies());
 	// initialize and load enemy data
     enemy.Initialize();
-    enemy.Load();
+    enemy.Load(enemy.GetType());
+    // initialize the view size and center
+    view.setSize(window.getSize().x, window.getSize().y);
+    view.setCenter(player.sprite.getPosition());
+    window.setView(view);
 }
 
 void Game::ProcessEvents() {
@@ -51,11 +60,43 @@ void Game::ProcessEvents() {
     }
 }
 
+
+
 // update functions for gamestate 'play'
 void Game::UpdatePlay(float deltaTime) {
+    // safeguard to skip update funcs and view updating if its the first frame (to prevent view not following player)
+    static bool firstFrame = true;
+    if (firstFrame) {
+        firstFrame = false;
+        return;
+    }
+    // call main update functions
     player.Update(player, enemy, deltaTime);
+    enemymanager.Update(deltaTime, player.sprite.getPosition());
     enemy.Update(deltaTime, player.sprite.getPosition());
     projectile.Update(window, player, enemy, deltaTime);
+    // get player pos
+    sf::Vector2f playerPosition = player.sprite.getPosition();
+    // get mouse position in window coords and then convert to world coords
+    sf::Vector2i mousePosWindow = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePosWorld = window.mapPixelToCoords(mousePosWindow);
+    // calculate the view center with a slight offset towards the mouse (so mouse can move the view a little bit futher out)
+    sf::Vector2f offset = (mousePosWorld - playerPosition) * 0.2f; // 0.2f is sensitivity
+    sf::Vector2f newCenter = playerPosition + offset;
+    // map bounds
+    float mapWidth = 3200.0f;
+    float mapHeight = 3200.0f;
+    sf::Vector2f viewSize = view.getSize();
+    // clamping view center to make sure it stays within map boundaries
+    /*newCenter.x = std::max(viewSize.x / 2.f, std::min(newCenter.x, mapWidth - viewSize.x / 2.f));
+    newCenter.y = std::max(viewSize.y / 2.f, std::min(newCenter.y, mapHeight - viewSize.y / 2.f));*/
+    // update view
+    view.setCenter(newCenter);
+    window.setView(view);
+}
+
+void Game::UpdateView(float deltaTime) {
+    
 }
 
 // update functions for gamestate 'level editor'
@@ -113,12 +154,15 @@ void Game::Render() {
     if (gameMode == Play) {
         // calling draw functions to literally draw the sprite or shape to the render window
         levelEdit.Draw(window, *this);
+        tilemap.Draw(window, *this, levelEdit);
         player.Draw(window);
+        enemymanager.Draw(window);
         enemy.Draw(window);
         projectile.Draw(window);
     }
     else if (gameMode == LevelEditor) {
         levelEdit.Draw(window, *this);
+        tilemap.Draw(window, *this, levelEdit);
     }
 	// copy frame from back buffer to window/screen
     window.display();

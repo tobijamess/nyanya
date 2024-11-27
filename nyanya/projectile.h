@@ -21,7 +21,6 @@ public:
 	float cooldown = 0.25f;
 	float timeSinceLastProjectile = 0.0f;
 
-
 	// struct to store every new projectile and its' set direction
 	struct ProjectileData {
 		sf::CircleShape hitbox;

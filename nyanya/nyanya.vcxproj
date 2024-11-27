@@ -142,10 +142,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemymanager.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="leveledit.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="map.cpp" />
+    <ClCompile Include="tilemap.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
     <ClCompile Include="util.cpp" />
@@ -154,7 +155,8 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="leveledit.h" />
-    <ClInclude Include="map.h" />
+    <ClInclude Include="tilemap.h" />
+    <ClInclude Include="enemymanager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="util.h" />

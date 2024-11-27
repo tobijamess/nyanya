@@ -33,17 +33,6 @@ bool Util::CollisionDetection(Player& player, Enemy& enemy) {
 	}
 }
 
-// projectile -> enemy collision detection
-bool Util::CollisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox) {
-	// calculate direction vector from the projectile's hitbox center to the enemy's hitbox center
-	sf::Vector2f direction = enemyHitbox.getPosition() - projHitbox.getPosition();
-	// calculate magnitude of the direction vector
-	float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-	// check if the distance is less than or equal to the sum of the radii
-	float combinedRadius = projHitbox.getRadius() + enemyHitbox.getRadius();
-	return distance <= combinedRadius; // return true if collision detected
-}
-
 // collision direction and pushback (opposite force that is applied when two hitboxes collide)
 bool Util::PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool isMoving) {
 	// initalize direction vector
@@ -57,7 +46,7 @@ bool Util::PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool i
 		// normalize the direction vector
 		direction = Util::NormalizeVector(direction);
 		// minimum distance which the player and enemy need to be kept apart at (sum of the player + enemy hitbox radius)
-		float collisionBoundary = 64.0f; 
+		float collisionBoundary = 64.0f;
 		// multiply direction by collisionBoundary to get a 64 length vector (direction has length of 1 because it was normalized) that points from enemys center point out toward player
 		// subtracting the resulting vector from enemy.hitbox.getPosition() places boundaryPosition exactly at 64 units away from the enemies center in the opposite direction of the player
 		sf::Vector2f boundaryPosition = enemy.hitbox.getPosition() - direction * collisionBoundary;
@@ -65,7 +54,7 @@ bool Util::PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool i
 		if (distance < collisionBoundary) {
 			player.hitbox.setPosition(boundaryPosition);
 			player.sprite.setPosition(boundaryPosition);
-		}  
+		}
 		// if player is moving, allow sliding along the boundary
 		if (isMoving) {
 			// calculate the tangent vector for sliding around the boundary (tangent vector is a vector perpandicular to direction)
@@ -76,6 +65,33 @@ bool Util::PlayerCollision(Player& player, Enemy& enemy, float deltaTime, bool i
 		}
 		return true;
 	}
+	return false;
+}
+
+// projectile -> enemy collision detection
+bool Util::CollisionDetection(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox) {
+	// calculate direction vector from the projectile's hitbox center to the enemy's hitbox center
+	sf::Vector2f direction = enemyHitbox.getPosition() - projHitbox.getPosition();
+	// calculate magnitude of the direction vector
+	float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+	// check if the distance is less than or equal to the sum of the radii
+	float combinedRadius = projHitbox.getRadius() + enemyHitbox.getRadius();
+	return distance <= combinedRadius; // return true if collision detected
+}
+
+// collision for projectiles and enemies, same concept as PlayerCollision() but slightly edited
+bool Util::ProjectileCollision(const sf::CircleShape& projHitbox, const sf::CircleShape& enemyHitbox) {
+	sf::Vector2f direction;
+	if (Util::CollisionDetection(projHitbox, enemyHitbox)) {
+		direction = enemyHitbox.getPosition() - projHitbox.getPosition();
+		float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+		direction = Util::NormalizeVector(direction);
+		float collisionBoundary = 64.0f;
+		sf::Vector2f boundaryPosition = enemyHitbox.getPosition() - direction * collisionBoundary;
+		if (distance < collisionBoundary) {
+		}
+		return true;
+	} 
 	return false;
 }
 

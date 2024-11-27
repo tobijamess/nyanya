@@ -6,7 +6,7 @@
 void Player::Move(const sf::Vector2f& offset) {
 	// adjust the sprite position based on the offset
 	sprite.setPosition(sprite.getPosition() + offset);
-	// Update hitbox position to match the sprite
+	// update hitbox position to match the sprite
 	hitbox.setPosition(sprite.getPosition());
 }
 
@@ -39,7 +39,11 @@ void Player::Load() {
 		// xIndex is sprite position in the row, yIndex is sprite position in column, is multiplied by 64 so the rectangle can move over/down 1 sprite at a time
 		// all player sprites are 64x64 so rectWidth and rectHeight stay at 64, 64
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
-		sprite.setPosition(sf::Vector2f(800, 500));
+		// set player to a specific grid position
+		int gridX = 2;
+		int gridY = 3;
+		float tileSize = 64;
+		sprite.setPosition(gridX * tileSize, gridY * tileSize);
 		// multiplies the current scale of sprite object (make sprite bigger)
 		sf::Vector2f scaleFactor = sf::Vector2f(3.0f, 3.0f);
 		sprite.setScale(scaleFactor);

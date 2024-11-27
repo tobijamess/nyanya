@@ -1,10 +1,14 @@
 #include "leveledit.h"
 #include "game.h"
+#include "tilemap.h"
 
 void LevelEdit::Initialize(Game& game) {
 	// set scrollWheelInput to None by default
 	game.scrollWheelInput = Game::ScrollWheel::None;
 	tileOptionIndex = 0;
+	// initialize the view to window size, position and center
+	view.setSize(game.window.getSize().x, game.window.getSize().y);
+	view.setCenter(view.getSize().x / 2.0f, view.getSize().y / 2.0f);
 }
 
 void LevelEdit::Load() {
@@ -31,60 +35,41 @@ void LevelEdit::Load() {
 	std::cout << "tile options loaded: " << tileOptions.size() << "\n";
 }
 
-void LevelEdit::CreateTile(const sf::Vector2f& position) {
-	int x = position.x / 64;
-	int y = position.y / 64;
-	// set sprite object 'tile' to current tile in the index
-	sf::Sprite tile = tileOptions[tileOptionIndex];
-	tile.setPosition(x * 64, y * 64);
-	// iterate throguh tiles vector (list)
-	for (int i = 0; i < tiles.size(); ++i) {
-		// check if there is already a tile at this position, if there is erase it
-		if (tiles[i].getPosition() == tile.getPosition()) {
-			// make i'th tile equivalent to the tile at the back (set it to the back of the list)
-			tiles[i] = tiles.back();
-			// erase the i'th tile which is now at the back of the list
-			tiles.pop_back();
-			break;
-		}
-	}
-	tiles.push_back(tile);
-}
-
-void LevelEdit::RemoveTile(const sf::Vector2f& position) {
-	int x = position.x / 64;
-	int y = position.y / 64;
-	sf::Vector2f tilePosition(x * 64, y * 64);
-	// iterate throguh tiles vector (list)
-	for (int i = 0; i < tiles.size(); ++i) {
-		// check if there is already a tile at this position, if there is erase it
-		if (tiles[i].getPosition() == tilePosition) {
-			// make i'th tile equivalent to the tile at the back (set it to the back of the list)
-			tiles[i] = tiles.back();
-			// erase the i'th tile which is now at the back of the list
-			tiles.pop_back();
-			break;
-		}
-	}
-}
-
 void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
 	// do nothing if not in level editor game state
-	if (game.getGameMode() != Game::LevelEditor) {
-		return;
+	if (game.getGameMode() != Game::LevelEditor) return;
+	// get mouse pos in world coords for use in create tile and remove tile
+	worldMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window), view);
+	// if mmb is pressed
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
+		// if not dragging, start dragging
+		if (!isDragging) {
+			isDragging = true;
+			// save initial mouse pos in world coords
+			initialMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window), view);
+		}
+		else {
+			// calculate movement delta in world coords and adjust the view based on that
+			sf::Vector2f currentMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window), view);
+			sf::Vector2f delta = initialMousePos - currentMousePos;
+			// move the view by the delta
+			view.move(delta);
+			window.setView(view);
+		}
 	}
+	else {
+		// reset dragging when mmb is released
+		isDragging = false;
+	} 
 	// when left mouse button is pressed
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		// get mouse position within the window
-		sf::Vector2f mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
 		// call create tile function with mouse position passed as param
-		CreateTile(mousePosition);
+		CreateTile(worldMousePos, game.GetTileMap());
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-		sf::Vector2f mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
-		RemoveTile(mousePosition);
+		RemoveTile(worldMousePos, game.GetTileMap());
 	}
-	// if the scrollwheelinput object is set to enum member ScrollUp
+	// tile preview image: if the scrollwheelinput object is set to enum member ScrollUp
 	if (game.scrollWheelInput == Game::ScrollWheel::ScrollUp) {
 		// increment the tile input index
 		tileOptionIndex++;
@@ -104,35 +89,42 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
 		// reset
 		game.scrollWheelInput = Game::ScrollWheel::None;
 	}
+	// update the tile preview to follow the mouse no matter where in the grid (now using worldmousepos instead of mousepos on screen)
+	if (!tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
+		sf::Sprite& previewTile = tileOptions[tileOptionIndex];
+		float tileSize = 64.0f;
+		previewTile.setPosition(
+			std::floor(worldMousePos.x / tileSize) * tileSize,
+			std::floor(worldMousePos.y / tileSize) * tileSize
+		);
+	}
+}
+
+void LevelEdit::CreateTile(const sf::Vector2f& position, TileMap& tilemap) {
+	int x = position.x / tilemap.tileSize;
+	int y = position.y / tilemap.tileSize;
+	tilemap.SetTile(x, y, tileOptionIndex);
+}
+
+void LevelEdit::RemoveTile(const sf::Vector2f& position, TileMap& tilemap) {
+	int x = position.x / tilemap.tileSize;
+	int y = position.y / tilemap.tileSize;
+	tilemap.SetTile(x, y, -1); // set to -1 to remove tile
 }
 
 void LevelEdit::Draw(sf::RenderWindow& window, Game& game) {
 	// loop to validate size of tileOptions vector before setting values like positions
-	if (game.getGameMode() == Game::LevelEditor && !tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
-		// size of each grid section to match tile size
-		const int tileSize = 64;
-		const sf::Vector2u windowSize = window.getSize();
-		// use vertex to create horizontal and vertical lines in the game window
-		sf::VertexArray grid(sf::Lines);
-		// create vertical lines by iterating through the width and height of the window, adding vertices for vertical and horizontal lines spaced at tileSize (64px) intervals
-		// then append the vertex's to the 'grid' vertex array
-		for (int x = 0; x <= windowSize.x; x += tileSize) {
-			grid.append(sf::Vertex(sf::Vector2f(x, 0), sf::Color(100, 100, 100)));
-			grid.append(sf::Vertex(sf::Vector2f(x, windowSize.y), sf::Color(100, 100, 100)));
+	if (game.getGameMode() == Game::LevelEditor) {
+		// apply leveleditor view
+		window.setView(view);
+		// validate and draw selected tile preview
+		if (!tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < static_cast<int>(tileOptions.size())) {
+			// set the preview tile to be drawn based on whatever index we have scrolled to in tileOptions
+			sf::Sprite& previewTile = tileOptions[tileOptionIndex];
+			// set tile preview image to world coords mouse position
+			previewTile.setPosition(window.mapPixelToCoords(sf::Mouse::getPosition(window), view));
+			window.draw(previewTile);
 		}
-		// create horizontal lines
-		for (int y = 0; y <= windowSize.y; y += tileSize) {
-			grid.append(sf::Vertex(sf::Vector2f(0, y), sf::Color(100, 100, 100)));
-			grid.append(sf::Vertex(sf::Vector2f(windowSize.x, y), sf::Color(100, 100, 100)));
-		}
-		// draw full vertex array grid
-		window.draw(grid);
-		// get mouse pos within game window
-		sf::Vector2f mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
-		// set position of selected tile (tileoption index) to the mouse position
-		tileOptions[tileOptionIndex].setPosition(mousePosition);
-		// draw that selected tile
-		window.draw(tileOptions[tileOptionIndex]);
 	}
 	// iterate through each tile within the tiles vector of sprites and draw to application window
 	for (const sf::Sprite& tile : tiles) {

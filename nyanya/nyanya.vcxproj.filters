@@ -33,10 +33,13 @@
     <ClCompile Include="projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="map.cpp">
+    <ClCompile Include="tilemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="leveledit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemymanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,10 +59,13 @@
     <ClInclude Include="projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="map.h">
+    <ClInclude Include="tilemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="leveledit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enemymanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
