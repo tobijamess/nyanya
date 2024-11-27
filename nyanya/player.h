@@ -7,9 +7,11 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include "enemy.h"
+#include "enemymanager.h"
 
 class Player {
 public:
+	int health = 100;
 	// index gets multiplied by 64 to find the position of single sprite in the spritesheet
 	// index is the count of sprites in the sheet, count starts at 0
 	int xIndex = 0;
@@ -31,7 +33,7 @@ private:
 public:
 	void Initialize();
 	void Load();
-	void Update(Player& player, Enemy& enemy, float deltaTime);
+	void Update(Player& player, EnemyManager& enemymanager, float deltaTime);
 	void Draw(sf::RenderWindow& window);
 	void Move(const sf::Vector2f& offset);
 private:

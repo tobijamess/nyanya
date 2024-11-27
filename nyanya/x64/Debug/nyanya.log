@@ -1,28 +1,21 @@
-﻿  enemy.cpp
-F:\Repos\nyanya\nyanya\enemy.cpp(35,7): warning C4553: '==': result of expression not used; did you intend '='?
-  enemymanager.cpp
-F:\Repos\nyanya\nyanya\enemymanager.cpp(14,81): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-F:\Repos\nyanya\nyanya\enemymanager.cpp(14,81): warning C4267:         with
-F:\Repos\nyanya\nyanya\enemymanager.cpp(14,81): warning C4267:         [
-F:\Repos\nyanya\nyanya\enemymanager.cpp(14,81): warning C4267:             _Ty=int
-F:\Repos\nyanya\nyanya\enemymanager.cpp(14,81): warning C4267:         ]
-F:\Repos\nyanya\nyanya\enemymanager.cpp(15,78): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
-F:\Repos\nyanya\nyanya\enemymanager.cpp(15,78): warning C4267:         with
-F:\Repos\nyanya\nyanya\enemymanager.cpp(15,78): warning C4267:         [
-F:\Repos\nyanya\nyanya\enemymanager.cpp(15,78): warning C4267:             _Ty=int
-F:\Repos\nyanya\nyanya\enemymanager.cpp(15,78): warning C4267:         ]
-  game.cpp
-F:\Repos\nyanya\nyanya\game.cpp(34,54): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-F:\Repos\nyanya\nyanya\game.cpp(34,54): warning C4244:         with
-F:\Repos\nyanya\nyanya\game.cpp(34,54): warning C4244:         [
-F:\Repos\nyanya\nyanya\game.cpp(34,54): warning C4244:             T=unsigned int
-F:\Repos\nyanya\nyanya\game.cpp(34,54): warning C4244:         ]
-F:\Repos\nyanya\nyanya\game.cpp(34,34): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-F:\Repos\nyanya\nyanya\game.cpp(34,34): warning C4244:         with
-F:\Repos\nyanya\nyanya\game.cpp(34,34): warning C4244:         [
-F:\Repos\nyanya\nyanya\game.cpp(34,34): warning C4244:             T=unsigned int
-F:\Repos\nyanya\nyanya\game.cpp(34,34): warning C4244:         ]
+﻿  game.cpp
+F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'game.cpp')
+  
+F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         with
+F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         [
+F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:             T=unsigned int
+F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         ]
+F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         with
+F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         [
+F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:             T=unsigned int
+F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         ]
   leveledit.cpp
+F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'leveledit.cpp')
+  
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,61): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,61): warning C4244:         with
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,61): warning C4244:         [
@@ -55,9 +48,12 @@ F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:         [
 F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:             T=float
 F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:         ]
   main.cpp
+F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
   tilemap.cpp
-  player.cpp
-  projectile.cpp
-  util.cpp
+F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'tilemap.cpp')
+  
   Generating Code...
   nyanya.vcxproj -> F:\Repos\nyanya\x64\Debug\nyanya.exe

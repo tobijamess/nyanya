@@ -12,7 +12,7 @@ void LevelEdit::Initialize(Game& game) {
 }
 
 void LevelEdit::Load() {
-	if (texture.loadFromFile("assets/map/tilemap.jpg")) {
+	if (texture.loadFromFile("assets/map/tilemap.png")) {
 		std::cout << "tilemap loaded successfully\n";
 		// iterate down columns of sprites in the tilemap.png second
 		for (int y = 0; y < 4; ++y) {
@@ -37,7 +37,7 @@ void LevelEdit::Load() {
 
 void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
 	// do nothing if not in level editor game state
-	if (game.getGameMode() != Game::LevelEditor) return;
+	if (game.GetGameMode() != Game::LevelEditor) return;
 	// get mouse pos in world coords for use in create tile and remove tile
 	worldMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window), view);
 	// if mmb is pressed
@@ -114,7 +114,7 @@ void LevelEdit::RemoveTile(const sf::Vector2f& position, TileMap& tilemap) {
 
 void LevelEdit::Draw(sf::RenderWindow& window, Game& game) {
 	// loop to validate size of tileOptions vector before setting values like positions
-	if (game.getGameMode() == Game::LevelEditor) {
+	if (game.GetGameMode() == Game::LevelEditor) {
 		// apply leveleditor view
 		window.setView(view);
 		// validate and draw selected tile preview

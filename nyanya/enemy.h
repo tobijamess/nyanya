@@ -11,6 +11,7 @@ class Enemy {
 public:
 	// placeholder enemy types
 	enum class Type { Basic, Advanced, Boss};
+	int health = 100;
 	int xIndex = 0;
 	int yIndex = 0;
 	sf::Sprite sprite;
@@ -22,9 +23,8 @@ public:
 		return type;
 	}
 private:
-	float enemySpeed = 150.0f;
-	sf::Texture texture;
-	float detectionRadius = 300.0f;
+	float enemySpeed = 200.0f;
+	float detectionRadius = 1000.0f;
 	sf::CircleShape detectionCircle;
 	float attackRadius = 100.0f;
 	sf::CircleShape attackCircle;

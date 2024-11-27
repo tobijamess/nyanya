@@ -28,35 +28,35 @@ void EnemyManager::SpawnEnemy(Enemy::Type type) {
     // if activeEnemies vector is more than maxEnemies allowed, exit early
     if (activeEnemies.size() >= maxEnemies) return;
     // otherwise, create new enemy initialize and load it, then set random spawn position, and finally push it back into activeEnemies vector
-    Enemy newEnemy;
-    newEnemy.Initialize();
-    newEnemy.Load(type);
-    newEnemy.sprite.setPosition(GetRandomTilePosition());
-    activeEnemies.push_back(newEnemy);
+    auto newEnemy = std::make_unique<Enemy>();
+    newEnemy->Initialize();
+    newEnemy->Load(type);
+    newEnemy->sprite.setPosition(GetRandomTilePosition());
+    activeEnemies.push_back(std::move(newEnemy));
 }
 
 void EnemyManager::Update(float deltaTime, const sf::Vector2f& playerPos) {
-    // iterate through activeEnemies vector
-    for (size_t i = 0; i < activeEnemies.size(); ++i) {
-        // call Update function for i'th enemy to handle it's individual behavior
-        activeEnemies[i].Update(deltaTime, playerPos);
-        // removal conditions like health being reduced to 0 etc.
-        //if (health <= 0) {
-        //    RemoveEnemy(i);
-        //    --i; // adjust index after removal
-        //}
+    for (size_t i = 0; i < activeEnemies.size();) {
+        auto& enemy = activeEnemies[i];
+        enemy->Update(deltaTime, playerPos);
+        if (enemy->health <= 0) {
+            RemoveEnemy(i);
+        }
+        else {
+            ++i;
+        }
     }
 }
 
 void EnemyManager::RemoveEnemy(size_t index) {
-    // set current enemy in activeEnemies index to the back of the list
-    activeEnemies[index] = activeEnemies.back();
+    // move current enemy in activeEnemies index to the back of the list
+    activeEnemies[index] = std::move(activeEnemies.back());
     // erase the enemy that is now at the back of the list
     activeEnemies.pop_back();
 }
 
 void EnemyManager::Draw(sf::RenderWindow& window) {
     for (auto& enemy : activeEnemies) {
-        enemy.Draw(window);
+        enemy->Draw(window);
     }
 }

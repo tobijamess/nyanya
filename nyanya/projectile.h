@@ -42,7 +42,7 @@ private:
 public:
 	void Initialize();
 	void Load(Player& player);
-	void Update(sf::RenderWindow& window, Player& player, Enemy& enemy, float deltaTime);
+	void Update(sf::RenderWindow& window, Player& player, EnemyManager& enemymanager, float deltaTime);
 	void Draw(sf::RenderWindow& window);
 
 	// getter for vector of instanciated structs to use in collision detection

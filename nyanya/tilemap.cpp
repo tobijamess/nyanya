@@ -3,8 +3,8 @@
 #include "leveledit.h"
 
 void TileMap::Initialize(int width, int height) {
-	// initialize the tilemap with default sizes and default values, -1 makes sure the tilemap is completely empty
-	tileMap = std::vector<std::vector<int>>(height, std::vector<int>(width, -1));
+	// initialize the tilemap with default sizes and default values, set default tileID to 0 makes sure the tilemap is completely empty
+	tileMap = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
 	// initialize the collisionmap with default sizes and values, true makes sure they are walkable by default (no collision)
 	collisionMap = std::vector<std::vector<bool>>(height, std::vector<bool>(width, true));
 }

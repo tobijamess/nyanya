@@ -31,12 +31,10 @@ void Projectile::Load(Player& player) {
 		// set the origin of the sprite to the center of the original texture
 		sprite.setOrigin(static_cast<float>(projSize.x) / 2.0f,
 			static_cast<float>(projSize.y) / 2.0f);
-		// FIX THIS
-		/*sprite.setPosition(player.sprite.getPosition().x, player.sprite.getPosition().y);*/
 	}
 }
 
-void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, float deltaTime) {
+void Projectile::Update(sf::RenderWindow& window, Player& player, EnemyManager& enemymanager, float deltaTime) {
 	// update cooldown timer which adds a cooldown to how quickly projectiles can be created
 	timeSinceLastProjectile += deltaTime;
 	// if left mouse button is pressed, and the time since the last projectile was created is longer than the cooldown, execute following code
@@ -68,7 +66,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 		// set the sprites rotation to the calculateRotation() functions result
 		sprite.setRotation(rotation);
 		// push newProjectile and its' intialDirection into the vector of structs along with its hitbox and lifetime
-		playerProjectiles.push_back({ newHitbox, newProjectile, initialDirection, 3.0f });
+		playerProjectiles.push_back({ newHitbox, newProjectile, initialDirection, 0.1f });
 	}
 	// updates the position of each individual projectile based on it's direction stored in the playerProjectiles
 	for (size_t i = 0; i < playerProjectiles.size(); i++)
@@ -79,15 +77,26 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, Enemy& enemy, 
 			playerProjectiles[i].direction * projectileSpeed * deltaTime);
 		// set each projectile elements' hitbox to their sprites' position
 		playerProjectiles[i].hitbox.setPosition(playerProjectiles[i].projectile.getPosition());
-		// collision detection
-		if (Util::ProjectileCollision(playerProjectiles[i].hitbox, enemy.hitbox)) {
-			// collision working
-			std::cout << "Projectile Collision Working!\n";
-			// set i'th player projectile to the back of the list
-			playerProjectiles[i] = playerProjectiles.back();
-			// erase i'th projectile from the back of the list
-			playerProjectiles.pop_back();
+
+		for (const auto& enemy : enemymanager.GetActiveEnemies()) {
+			// collision detection
+			if (Util::ProjectileCollision(playerProjectiles[i].hitbox, enemy->hitbox) ) {
+				// reduce enemy health by 25 on projectile collision
+				enemy->health -= 25;
+				// collision working
+				std::cout << "Projectile Collision Working!\n";
+				// set i'th player projectile to the back of the list
+				playerProjectiles[i] = playerProjectiles.back();
+				// erase i'th projectile from the back of the list
+				playerProjectiles.pop_back();
+				break;
+			}
 		}
+		// lifetime * deltaTime? FIX LATER
+		/*if (playerProjectiles[i].lifetime * deltaTime > playerProjectiles[i].lifetime) {
+			playerProjectiles[i] = playerProjectiles.back();
+			playerProjectiles.pop_back();
+		}*/
 	}
 }
 

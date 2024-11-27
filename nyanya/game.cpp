@@ -4,7 +4,8 @@
 Game::Game()
     : window(sf::VideoMode(1280, 720), "Game Window")
     , gameMode(Play)
-    , scrollWheelInput(None) {
+    , scrollWheelInput(None)
+{
     // initialize game function which holds all sub-initialize functions (player.initialize() etc.)
     Initialize();
 }
@@ -16,6 +17,11 @@ Game::~Game() {
 void Game::Initialize() {
     // initialize tilemap with its size (50x50 of 64x64 tiles)
     tilemap.Initialize(50, 50);
+    for (int y = 0; y < 50; ++y) {
+        for (int x = 0; x < 50; ++x) {
+            tilemap.SetCollision(x, y, true);
+        }
+    }
     // pass this instance of Game instead of creating a Game object and passing that, since that would create a new instance and cause infinite loop
     levelEdit.Initialize(*this);
     levelEdit.Load();
@@ -25,11 +31,11 @@ void Game::Initialize() {
 	// initialize and load projectile data
     projectile.Initialize();
     projectile.Load(player);
-    // initialize and load enemymanager data
-    enemymanager.Initialize(GetTileMap(), enemymanager.GetMaxEnemies());
 	// initialize and load enemy data
     enemy.Initialize();
     enemy.Load(enemy.GetType());
+    // initialize and load enemymanager data
+    enemymanager.Initialize(GetTileMap(), enemymanager.GetMaxEnemies());
     // initialize the view size and center
     view.setSize(window.getSize().x, window.getSize().y);
     view.setCenter(player.sprite.getPosition());
@@ -44,7 +50,7 @@ void Game::ProcessEvents() {
     while (window.pollEvent(event)) {
         // if application window exit is pressed, close window
         switch (event.type) {
-        case  sf::Event::Closed:
+        case sf::Event::Closed:
             window.close();
             break;
         case sf::Event::MouseWheelScrolled:
@@ -57,24 +63,26 @@ void Game::ProcessEvents() {
                 }
             }
         }
+
     }
 }
 
-
-
-// update functions for gamestate 'play'
+// update functions for gamemode 'play'
 void Game::UpdatePlay(float deltaTime) {
-    // safeguard to skip update funcs and view updating if its the first frame (to prevent view not following player)
-    static bool firstFrame = true;
-    if (firstFrame) {
-        firstFrame = false;
-        return;
-    }
     // call main update functions
-    player.Update(player, enemy, deltaTime);
+    player.Update(player, enemymanager, deltaTime);
+    //enemy.Update(deltaTime, player.sprite.getPosition());
     enemymanager.Update(deltaTime, player.sprite.getPosition());
-    enemy.Update(deltaTime, player.sprite.getPosition());
-    projectile.Update(window, player, enemy, deltaTime);
+    projectile.Update(window, player, enemymanager, deltaTime);
+
+    static float timeSinceLastSpawn = 0.0f;
+    timeSinceLastSpawn += deltaTime;
+    // ensure the enemy limit is met
+    if (timeSinceLastSpawn >= 1.0f && enemymanager.GetActiveEnemiesCount() < enemymanager.GetMaxEnemies()) {
+        enemymanager.SpawnEnemy(Enemy::Type::Basic);
+        timeSinceLastSpawn = 0.0f;
+    }
+
     // get player pos
     sf::Vector2f playerPosition = player.sprite.getPosition();
     // get mouse position in window coords and then convert to world coords
@@ -93,10 +101,6 @@ void Game::UpdatePlay(float deltaTime) {
     // update view
     view.setCenter(newCenter);
     window.setView(view);
-}
-
-void Game::UpdateView(float deltaTime) {
-    
 }
 
 // update functions for gamestate 'level editor'
@@ -128,19 +132,33 @@ void Game::GameModeSelect() {
 }
 
 void Game::Run() { 
+    mainMenu = new cMainMenu();
+    mainMenu->Initialize(window);
+    // set current game state to main menu
+    gameState = MainMenu;
+   
     while (window.isOpen()) {
         ProcessEvents();
         // restart the timer at the beginning of every window frame
         // store the timer value in deltaTime variable for use in other functions (player.Update() etc.)
         float deltaTime = clock.restart().asSeconds();
-        GameModeSelect();
-        // switch cases for switching between gamemodes based on GameModeSelect() function result
-        switch (gameMode) {
-        case Play:
-            UpdatePlay(deltaTime);
+        // switch cases for menu switching based on user input
+        switch (gameState) {
+        case MainMenu:
+            // call class input handling functions
+            mainMenu->HandleInput(window, gameState);
             break;
-        case LevelEditor:
-            UpdateLevelEditor();
+        case Playing:
+            GameModeSelect();
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) gameState = PauseMenu;
+            // check for switching between gamemodes based on GameModeSelect() function result
+            if (gameMode == Play) UpdatePlay(deltaTime);
+            else if (gameMode == LevelEditor) UpdateLevelEditor();
+            break;
+        case PauseMenu:
+            pauseMenu->HandleInput(window, gameState);
+            break;
+        case GameOver:
             break;
         }
         Render();
@@ -148,21 +166,31 @@ void Game::Run() {
 }
 
 void Game::Render() {
-	// default window background color
-    window.clear(sf::Color::Black);
+    window.clear();
     // determine what is drawn to the application window based on game states
-    if (gameMode == Play) {
-        // calling draw functions to literally draw the sprite or shape to the render window
-        levelEdit.Draw(window, *this);
-        tilemap.Draw(window, *this, levelEdit);
-        player.Draw(window);
-        enemymanager.Draw(window);
-        enemy.Draw(window);
-        projectile.Draw(window);
-    }
-    else if (gameMode == LevelEditor) {
-        levelEdit.Draw(window, *this);
-        tilemap.Draw(window, *this, levelEdit);
+    switch (gameState) {
+    case MainMenu:
+        mainMenu->Draw(window);
+        break;
+    case Playing:
+        if (gameMode == Play) {
+            levelEdit.Draw(window, *this);
+            tilemap.Draw(window, *this, levelEdit);
+            player.Draw(window);
+            enemymanager.Draw(window);
+            projectile.Draw(window);
+        }
+        else if (gameMode == LevelEditor) {
+            tilemap.Draw(window, *this, levelEdit);
+            levelEdit.Draw(window, *this);
+        }
+        break;
+    case PauseMenu:
+        pauseMenu->Draw(window);
+        break;
+    case GameOver:
+        // handle GameOver screen rendering
+        break;
     }
 	// copy frame from back buffer to window/screen
     window.display();

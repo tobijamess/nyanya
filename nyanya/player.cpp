@@ -59,7 +59,7 @@ void Player::Load() {
 
 // function to take player input and change position of player sprite based on input
 // pass Player object as parameter to access Player members and change them
-void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
+void Player::Update(Player& player, EnemyManager& enemymanager, float deltaTime) {
 	// create movement vector2f to store the values produced by the keyboard presses which are based on the x and y axis
 	sf::Vector2f movement(0.0f, 0.0f);
 	
@@ -104,9 +104,12 @@ void Player::Update(Player& player, Enemy& enemy, float deltaTime) {
 	Move(movement * playerSpeed * deltaTime);
 	// set hitbox to sprites position so it always follows player
 	hitbox.setPosition(sprite.getPosition().x, sprite.getPosition().y);
-	// check for collision
-	if (Util::PlayerCollision(player, enemy, deltaTime, isMoving)) {
-		std::cout << "collision working\n";
+	// check for collision with all active enemies
+	for (const auto& enemy : enemymanager.GetActiveEnemies()) {
+		if (Util::PlayerCollision(player, *enemy, deltaTime, isMoving)) {
+			player.health -= 25;
+			std::cout << "collision with enemy\n";
+		}
 	}
 }
 
