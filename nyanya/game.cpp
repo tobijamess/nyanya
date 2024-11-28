@@ -105,7 +105,15 @@ void Game::UpdatePlay(float deltaTime) {
 
 // update functions for gamestate 'level editor'
 void Game::UpdateLevelEditor() {
-    levelEdit.Update(window, *this);
+    // tilemap layer 1
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) { tilemap.SwitchLayer(0); }
+    // tilemap layer 2
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) { tilemap.SwitchLayer(1); }
+    // tilemap layer 3
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) { tilemap.SwitchLayer(2); }
+    // tilemap collision layer
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) { tilemap.SwitchLayer(3); }
+    levelEdit.Update(window, *this, GetTileMap());
 }
 
 void Game::GameModeSelect() {
@@ -174,8 +182,8 @@ void Game::Render() {
         break;
     case Playing:
         if (gameMode == Play) {
-            levelEdit.Draw(window, *this);
-            tilemap.Draw(window, *this, levelEdit);
+            //levelEdit.Draw(window, *this);
+            tilemap.DrawAllLayers(window, *this, levelEdit);
             player.Draw(window);
             enemymanager.Draw(window);
             projectile.Draw(window);

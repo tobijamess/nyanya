@@ -35,7 +35,7 @@ void LevelEdit::Load() {
 	std::cout << "tile options loaded: " << tileOptions.size() << "\n";
 }
 
-void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
+void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 	// do nothing if not in level editor game state
 	if (game.GetGameMode() != Game::LevelEditor) return;
 	// get mouse pos in world coords for use in create tile and remove tile
@@ -103,13 +103,23 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game) {
 void LevelEdit::CreateTile(const sf::Vector2f& position, TileMap& tilemap) {
 	int x = position.x / tilemap.tileSize;
 	int y = position.y / tilemap.tileSize;
-	tilemap.SetTile(x, y, tileOptionIndex);
+	if (tilemap.GetActiveLayerIndex() == 3) {
+		tilemap.SetCollision(x, y, false);
+	}
+	else {
+		tilemap.SetTile(x, y, tileOptionIndex);
+	}
 }
 
 void LevelEdit::RemoveTile(const sf::Vector2f& position, TileMap& tilemap) {
 	int x = position.x / tilemap.tileSize;
 	int y = position.y / tilemap.tileSize;
-	tilemap.SetTile(x, y, -1); // set to -1 to remove tile
+	if (tilemap.GetActiveLayerIndex() == 3) {
+		tilemap.SetCollision(x, y, true);
+	}
+	else {
+		tilemap.SetTile(x, y, -1); // set to -1 to remove tile
+	}
 }
 
 void LevelEdit::Draw(sf::RenderWindow& window, Game& game) {

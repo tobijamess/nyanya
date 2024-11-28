@@ -11,8 +11,8 @@ void EnemyManager::Initialize(TileMap& tileMap, int maxEnemies) {
 // random tile selection for random enemy spawn points
 sf::Vector2f EnemyManager::GetRandomTilePosition() {
     // create x and y distributions to randomly choose tile indices within map dimensions
-    std::uniform_int_distribution<int> xDist(0, tileMap->GetTileMap()[0].size() - 1);
-    std::uniform_int_distribution<int> yDist(0, tileMap->GetTileMap().size() - 1);
+    std::uniform_int_distribution<int> xDist(0, tileMap->GetTileMapLayer()[0].size() - 1);
+    std::uniform_int_distribution<int> yDist(0, tileMap->GetTileMapLayer().size() - 1);
     int x, y;
     // loop until valid tile that IsWalkable (doesn't collide) and isnt empty or unusable (GetTile(x, y) == -1)
     do {

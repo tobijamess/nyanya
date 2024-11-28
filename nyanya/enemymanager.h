@@ -28,7 +28,7 @@ private:
     // use pointers so enemy objects arent copied (so the same instance is updated and rendered so hitboxes work for every enemy)
     std::vector<std::unique_ptr<Enemy>> activeEnemies;
     TileMap* tileMap; // pointer to the tile map
-    int maxEnemies = 1000;
+    int maxEnemies = 20;
     std::default_random_engine rng;
     sf::Vector2f GetRandomTilePosition();
 };

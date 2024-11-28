@@ -16,7 +16,7 @@ public:
 	void RemoveTile(const sf::Vector2f& position, TileMap& tilemap);
 	void Initialize(Game& game);
 	void Load();
-	void Update(sf::RenderWindow& window, Game& game);
+	void Update(sf::RenderWindow& window, Game& game, TileMap& tilemap);
 	void Draw(sf::RenderWindow& window, Game& game);
 	std::vector<sf::Sprite>& GetTileOptions() {
 		return tileOptions;
