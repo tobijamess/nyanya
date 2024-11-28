@@ -18,10 +18,10 @@ public:
 	void Load();
 	void Update(sf::RenderWindow& window, Game& game, TileMap& tilemap);
 	void Draw(sf::RenderWindow& window, Game& game);
+	void ToggleKeybindOverlay();
 	std::vector<sf::Sprite>& GetTileOptions() {
 		return tileOptions;
 	}
-
 private:
 	int tileOptionIndex;
 	sf::Texture texture;
@@ -39,5 +39,9 @@ private:
 	bool isDragging = false;
 	// tile preview position
 	sf::Vector2f tilePreviewPos;
+	// variables/objects for the keybind overlay while in level editor 
+	bool showKeybindOverlay = false;
+	sf::Font font;
+	sf::Text keybindText;
 };
 #endif

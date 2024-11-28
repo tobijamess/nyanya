@@ -98,7 +98,7 @@ public:
         playButton.setString("Play");
         playButton.setCharacterSize(50);
         playButton.setPosition(540, 300);
-        playButton.setFillColor(sf::Color::Red);
+        playButton.setFillColor(sf::Color::White);
         /*settingsButton.setFont(font);
         settingsButton.setString("Settings");
         settingsButton.setPosition(100, 200);*/
@@ -106,7 +106,7 @@ public:
         exitButton.setString("Exit");
         exitButton.setCharacterSize(50);
         exitButton.setPosition(100, 300);
-        exitButton.setFillColor(sf::Color::Red);
+        exitButton.setFillColor(sf::Color::White);
     }
     void HandleInput(sf::RenderWindow& window, Game::GameState& currentstate) {
         // check if lmb is pressed
@@ -142,19 +142,23 @@ private:
     sf::Text resumeButton;
     /*sf::Text settingsButton;*/
     sf::Text mainMenuButton;
+    sf::RectangleShape background;
 public:
-    void Initialize() {
+    void Initialize(sf::RenderWindow& window) {
+        // initialize a background rectangle with a default color CHANGE TO SPRITE OR BACKGROUND IMAGE LATER
+        background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)));
+        background.setFillColor(sf::Color(50, 50, 50));
         font.loadFromFile("assets/fonts/font.ttf");
         resumeButton.setFont(font);
         resumeButton.setString("Resume");
         resumeButton.setCharacterSize(50);
         resumeButton.setPosition(100, 100);
-        resumeButton.setFillColor(sf::Color::Blue);
+        resumeButton.setFillColor(sf::Color::White);
         mainMenuButton.setFont(font);
         mainMenuButton.setString("Main Menu");
         mainMenuButton.setCharacterSize(50);
         mainMenuButton.setPosition(100, 200);
-        resumeButton.setFillColor(sf::Color::Blue);
+        mainMenuButton.setFillColor(sf::Color::White);
     }
     void HandleInput(sf::RenderWindow& window, Game::GameState& currentstate) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -169,6 +173,7 @@ public:
         }
     }
     void Draw(sf::RenderWindow& window) {
+        window.draw(background);
         window.draw(resumeButton);
         window.draw(mainMenuButton);
     }

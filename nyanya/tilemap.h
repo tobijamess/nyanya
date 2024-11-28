@@ -18,7 +18,7 @@ public:
 	void SwitchLayer(int layerIndex);
 	void SetTile(int x, int y, int tileID);
 	int GetTile(int x, int y) const;
-	void SetCollision(int x, int y, bool walkable);
+	void SetCollision(int x, int y, int value);
 	bool IsWalkable(int x, int y) const;
 	void DrawAllLayers(sf::RenderWindow& window, Game& game, LevelEdit& leveledit);
 	void Draw(sf::RenderWindow& window, Game& game, LevelEdit& leveledit);
@@ -37,7 +37,7 @@ private:
 	std::vector<std::vector<int>> tileMap2;
 	std::vector<std::vector<int>> tileMap3;
 	// vector of vectors to store collision map
-	std::vector<std::vector<bool>> collisionMap;
+	std::vector<std::vector<int>> collisionMap;
 	// pointer to current active tilemap layer
 	std::vector<std::vector<int>>* currentLayer = &tileMap;
 };

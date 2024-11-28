@@ -142,6 +142,8 @@ void Game::GameModeSelect() {
 void Game::Run() { 
     mainMenu = new cMainMenu();
     mainMenu->Initialize(window);
+    pauseMenu = new cPauseMenu();
+    pauseMenu->Initialize(window);
     // set current game state to main menu
     gameState = MainMenu;
    
@@ -178,6 +180,7 @@ void Game::Render() {
     // determine what is drawn to the application window based on game states
     switch (gameState) {
     case MainMenu:
+        window.setView(window.getDefaultView());
         mainMenu->Draw(window);
         break;
     case Playing:
@@ -194,6 +197,7 @@ void Game::Render() {
         }
         break;
     case PauseMenu:
+        window.setView(window.getDefaultView());
         pauseMenu->Draw(window);
         break;
     case GameOver:

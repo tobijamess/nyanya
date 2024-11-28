@@ -7,8 +7,8 @@ void TileMap::Initialize(int width, int height) {
 	tileMap = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
     tileMap2 = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
     tileMap3 = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
-	// initialize the collisionmap with default sizes and values, true makes sure they are walkable by default (no collision)
-	collisionMap = std::vector<std::vector<bool>>(height, std::vector<bool>(width, true));
+	// initialize the collisionmap with x2 sizes (to choose quadrants of tiles that will be collidable), 1 makes sure they are walkable by default (no collision)
+	collisionMap = std::vector<std::vector<int>>(height * 2, std::vector<int>(width * 2, 1));
 }
 
 void TileMap::SwitchLayer(int layerIndex) {
@@ -24,7 +24,7 @@ void TileMap::SwitchLayer(int layerIndex) {
         currentLayer = &tileMap3;
         break;
     case 3:
-        currentLayer = nullptr;
+        currentLayer = &collisionMap;
         break;
     default:
         return;
@@ -52,21 +52,34 @@ int TileMap::GetTile(int x, int y) const {
     // example usage: int tileID = tileMap.GetTile(3, 4);
 }
 
-void TileMap::SetCollision(int x, int y, bool walkable) {
-    // if x and y exist and are within the bounds of the collisionMap
-    if (x >= 0 && x < collisionMap[0].size() && y >= 0 && y < collisionMap.size()) {
-        // valid so update the collisionMap with bool value
-        collisionMap[y][x] = walkable;
+void TileMap::SetCollision(int x, int y, int value) {
+    // convert x and y to collision grid indices (x2)
+    x *= 2;
+    y *= 2;
+    for (int offsetY = 0; offsetY < 2; ++offsetY) {
+        for (int offsetX = 0; offsetX < 2; ++offsetX) {
+            // if x and y exist and are within the bounds of the collisionMap
+            if (x + offsetX < collisionMap[0].size() && y + offsetY < collisionMap.size()) {
+                // valid so update the collisionMap with bool value
+                collisionMap[y + offsetY][x + offsetX] = value;
+            }
+            // example usage: tileMap.SetCollision(3, 4, true);
+        }
     }
-    // example usage: tileMap.SetCollision(3, 4, true);
 }
 
 bool TileMap::IsWalkable(int x, int y) const {
+    x *= 2;
+    y *= 2;
     // same as SetCollision() but returns value of collisionMap[y][x] which will either be true/walkable or false/non-walkable
-    if (x >= 0 && x < collisionMap[0].size() && y >= 0 && y < collisionMap.size()) {
-        return collisionMap[y][x];
+    for (int offsetY = 0; offsetY < 2; ++offsetY) {
+        for (int offsetX = 0; offsetX < 2; ++offsetX) {
+            if (x + offsetX < collisionMap[0].size() && y + offsetY < collisionMap.size()) {
+                return collisionMap[y + offsetY][x + offsetX] == 1;
+            }
+        }
     }
-    return false; // out of bounds tiles are not walkable
+    return false;
     // example usage: bool walkable = tileMap.IsWalkable(3, 4);
 }
 
@@ -91,7 +104,7 @@ void TileMap::DrawAllLayers(sf::RenderWindow& window, Game& game, LevelEdit& lev
 
 void TileMap::Draw(sf::RenderWindow& window, Game& game, LevelEdit& leveledit) {
     if (currentLayer) {
-        auto drawLayer = [&](const std::vector<std::vector<int>>& layer) {
+        auto drawLayer = [&](const std::vector<std::vector<int>>& layer, float gridTileSize) {
             // iterate over rows and then columns
             for (int y = 0; y < layer.size(); ++y) {
                 for (int x = 0; x < layer[y].size(); ++x) {
@@ -103,35 +116,45 @@ void TileMap::Draw(sf::RenderWindow& window, Game& game, LevelEdit& leveledit) {
                         sf::Sprite& tile = leveledit.GetTileOptions()[tileID];
                         // set sprite position in world coords based on tiles x any y index (x * tileSize, y * tileSize converts tile indices to pixel coords)
                         tile.setPosition(x * tileSize, y * tileSize);
+                        tile.setScale(tileSize / 64.0f, tileSize / 64.0f);
                         window.draw(tile);
                     }
                 }
             }
-            };
-        // use drawLayer helper func to draw current layer
-        drawLayer(*currentLayer);
-        // iterate over rows and then columns of collision tilemap
-        for (int y = 0; y < collisionMap.size(); ++y) {
-            for (int x = 0; x < collisionMap[y].size(); ++x) {
-                //check collisionMap value to determine if tile is non-walkable (has collision)
-                if (!collisionMap[y][x]) {
-                    sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
-                    highlight.setPosition(x * tileSize, y * tileSize);
-                    highlight.setFillColor(sf::Color(255, 0, 0, 100)); // semi-transparent red fill for collidable tiles
-                    window.draw(highlight);
+        };
+        // if active layer is not collision map layer
+        if (activeLayerIndex != 3) {
+            // use drawLayer helper func to draw current layer
+            drawLayer(*currentLayer, tileSize);
+        }
+        else {
+            // iterate over rows and then columns of collision tilemap
+            for (int y = 0; y < collisionMap.size(); ++y) {
+                for (int x = 0; x < collisionMap[y].size(); ++x) {
+                    // check collisionMap value to determine if tile is non-walkable (value 2)
+                    if (collisionMap[y][x] == 2) {
+                        // tileSize / 2.0f because collision map tiles are half the size of normal tiles
+                        sf::RectangleShape highlight(sf::Vector2f(tileSize / 2.0f, tileSize / 2.0f));
+                        highlight.setPosition(x * (tileSize / 2.0f), y * (tileSize / 2.0f));
+                        highlight.setFillColor(sf::Color(255, 0, 0, 50)); // semi-transparent red fill for collidable tiles
+                        window.draw(highlight);
+                    }
                 }
             }
         }
     }
-
     // gridline drawing 
-    for (int y = 0; y < tileMap.size(); ++y) {
-        for (int x = 0; x < tileMap[y].size(); ++x) {
+    float gridTileSize = (activeLayerIndex == 3) ? tileSize / 2.0f : tileSize;
+    int gridWidth = (activeLayerIndex == 3) ? collisionMap[0].size() : tileMap[0].size();
+    int gridHeight = (activeLayerIndex == 3) ? collisionMap.size() : tileMap.size();
+
+    for (int y = 0; y < gridHeight; ++y) {
+        for (int x = 0; x < gridWidth; ++x) {
             // set the rectangle shape 'gridCell' to match the tileSize from TileMap class (64x64)
-            sf::RectangleShape gridCell(sf::Vector2f(tileSize, tileSize));
-            gridCell.setPosition(x * tileSize, y * tileSize);
+            sf::RectangleShape gridCell(sf::Vector2f(gridTileSize, gridTileSize));
+            gridCell.setPosition(x * gridTileSize, y * gridTileSize);
             gridCell.setFillColor(sf::Color::Transparent);
-            gridCell.setOutlineColor(sf::Color(100, 100, 100)); // grey color for gridlines
+            gridCell.setOutlineColor(sf::Color(100, 100, 100)); // gray color for grid lines
             gridCell.setOutlineThickness(1.0f);
             // draw gridlines around the tile
             window.draw(gridCell);

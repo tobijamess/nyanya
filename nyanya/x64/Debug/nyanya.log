@@ -1,18 +1,4 @@
-﻿  game.cpp
-F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  (compiling source file 'game.cpp')
-  
-F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         with
-F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         [
-F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:             T=unsigned int
-F:\Repos\nyanya\nyanya\game.cpp(40,54): warning C4244:         ]
-F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         with
-F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         [
-F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:             T=unsigned int
-F:\Repos\nyanya\nyanya\game.cpp(40,34): warning C4244:         ]
-  leveledit.cpp
+﻿  leveledit.cpp
 F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
   (compiling source file 'leveledit.cpp')
   
@@ -26,34 +12,35 @@ F:\Repos\nyanya\nyanya\leveledit.cpp(10,36): warning C4244:         with
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,36): warning C4244:         [
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,36): warning C4244:             T=unsigned int
 F:\Repos\nyanya\nyanya\leveledit.cpp(10,36): warning C4244:         ]
-F:\Repos\nyanya\nyanya\leveledit.cpp(87,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-F:\Repos\nyanya\nyanya\leveledit.cpp(104,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
-F:\Repos\nyanya\nyanya\leveledit.cpp(104,8): warning C4244:         with
-F:\Repos\nyanya\nyanya\leveledit.cpp(104,8): warning C4244:         [
-F:\Repos\nyanya\nyanya\leveledit.cpp(104,8): warning C4244:             T=float
-F:\Repos\nyanya\nyanya\leveledit.cpp(104,8): warning C4244:         ]
-F:\Repos\nyanya\nyanya\leveledit.cpp(105,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
-F:\Repos\nyanya\nyanya\leveledit.cpp(105,8): warning C4244:         with
-F:\Repos\nyanya\nyanya\leveledit.cpp(105,8): warning C4244:         [
-F:\Repos\nyanya\nyanya\leveledit.cpp(105,8): warning C4244:             T=float
-F:\Repos\nyanya\nyanya\leveledit.cpp(105,8): warning C4244:         ]
-F:\Repos\nyanya\nyanya\leveledit.cpp(110,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
-F:\Repos\nyanya\nyanya\leveledit.cpp(110,8): warning C4244:         with
-F:\Repos\nyanya\nyanya\leveledit.cpp(110,8): warning C4244:         [
-F:\Repos\nyanya\nyanya\leveledit.cpp(110,8): warning C4244:             T=float
-F:\Repos\nyanya\nyanya\leveledit.cpp(110,8): warning C4244:         ]
-F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
-F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:         with
-F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:         [
-F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:             T=float
-F:\Repos\nyanya\nyanya\leveledit.cpp(111,8): warning C4244:         ]
-  main.cpp
-F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  (compiling source file 'main.cpp')
-  
-  tilemap.cpp
-F:\Repos\nyanya\nyanya\enemymanager.h(25,34): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-  (compiling source file 'tilemap.cpp')
-  
-  Generating Code...
+F:\Repos\nyanya\nyanya\leveledit.cpp(118,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(165,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(165,8): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(165,8): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(165,8): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(165,8): warning C4244:         ]
+F:\Repos\nyanya\nyanya\leveledit.cpp(166,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(166,8): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(166,8): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(166,8): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(166,8): warning C4244:         ]
+F:\Repos\nyanya\nyanya\leveledit.cpp(178,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(178,8): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(178,8): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(178,8): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(178,8): warning C4244:         ]
+F:\Repos\nyanya\nyanya\leveledit.cpp(179,8): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(179,8): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(179,8): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(179,8): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(179,8): warning C4244:         ]
+F:\Repos\nyanya\nyanya\leveledit.cpp(184,9): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(184,9): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(184,9): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(184,9): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(184,9): warning C4244:         ]
+F:\Repos\nyanya\nyanya\leveledit.cpp(185,9): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+F:\Repos\nyanya\nyanya\leveledit.cpp(185,9): warning C4244:         with
+F:\Repos\nyanya\nyanya\leveledit.cpp(185,9): warning C4244:         [
+F:\Repos\nyanya\nyanya\leveledit.cpp(185,9): warning C4244:             T=float
+F:\Repos\nyanya\nyanya\leveledit.cpp(185,9): warning C4244:         ]
   nyanya.vcxproj -> F:\Repos\nyanya\x64\Debug\nyanya.exe
