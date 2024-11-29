@@ -10,17 +10,17 @@ void EnemyManager::Initialize(TileMap& tileMap, int maxEnemies) {
 
 // random tile selection for random enemy spawn points
 sf::Vector2f EnemyManager::GetRandomTilePosition() {
-    // create x and y distributions to randomly choose tile indices within map dimensions
-    std::uniform_int_distribution<int> xDist(0, tileMap->GetTileMapLayer()[0].size() - 1);
-    std::uniform_int_distribution<int> yDist(0, tileMap->GetTileMapLayer().size() - 1);
+    // collision map is higher resolution, so adjust the range for x and y
+    std::uniform_int_distribution<int> xDist(0, tileMap->GetTileMapLayer(3)[0].size() - 1);
+    std::uniform_int_distribution<int> yDist(0, tileMap->GetTileMapLayer(3).size() - 1);
     int x, y;
     // loop until valid tile that IsWalkable (doesn't collide) and isnt empty or unusable (GetTile(x, y) == -1)
     do {
         x = xDist(rng);
         y = yDist(rng);
-    } while (!tileMap->IsWalkable(x, y) || tileMap->GetTile(x, y) == -1);
-    // convert tile coords to world space coords by multiplying by tileMap's tileSize and return a vector that represents enemy spawn pos in world space
-    return sf::Vector2f(x * tileMap->tileSize, y * tileMap->tileSize);
+    } while (!tileMap->IsWalkable(x / 2, y / 2));
+    // return the position in world space; adjust by tileSize / 2 for collision map resolution
+    return sf::Vector2f(x * (tileMap->tileSize / 2.0f), y * (tileMap->tileSize / 2.0f));
 }
 
 // function to spawn enemy at random tile position

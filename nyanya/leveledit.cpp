@@ -41,6 +41,7 @@ void LevelEdit::Load() {
 			"2: Switch to Layer 2\n"
 			"3: Switch to Layer 3\n"
 			"4: Switch to Collision Layer\n"
+			"M: Toggle Merged Layer View\n"
 			"H: Toggle Keybind Overlay\n"
 			"Left Click: Place Tile\n"
 			"Right Click: Remove Tile\n"
@@ -52,8 +53,8 @@ void LevelEdit::Load() {
 }
 
 // function to toggle keybind overlay on and off
-void LevelEdit::ToggleKeybindOverlay() { 
-	showKeybindOverlay = !showKeybindOverlay; 
+void LevelEdit::ToggleKeybindOverlay() {
+	showKeybindOverlay = !showKeybindOverlay;
 }
 
 void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
@@ -81,16 +82,28 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 	else {
 		// reset dragging when mmb is released
 		isDragging = false;
-	} 
+	}
+	// toggle the keybind overlay when pressing H
 	static bool wasHPressed = false;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
 		if (!wasHPressed) {
 			ToggleKeybindOverlay();
 			wasHPressed = true;
 		}
-	} 
+	}
 	else {
 		wasHPressed = false;
+	}
+	// toggle the merge layer view when pressing M
+	static bool wasMPressed = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+		if (!wasMPressed) {
+			showMergedLayers = !showMergedLayers;
+			wasMPressed = true;
+		}
+	}
+	else {
+		wasMPressed = false;
 	}
 	// when left mouse button is pressed
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -105,8 +118,8 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 		// increment the tile input index
 		tileOptionIndex++;
 		// if tile input index reaches the end (>=), then just go back to beginning (tileOptionIndex = 0)
-		if (tileOptionIndex >= tileOptions.size()) { 
-			tileOptionIndex = 0; 
+		if (tileOptionIndex >= tileOptions.size()) {
+			tileOptionIndex = 0;
 		}
 		// reset
 		game.scrollWheelInput = Game::ScrollWheel::None;
@@ -114,13 +127,13 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 	// same for scroll down but opposite
 	else if (game.scrollWheelInput == Game::ScrollWheel::ScrollDown) {
 		tileOptionIndex--;
-		if (tileOptionIndex < 0) { 
-			tileOptionIndex = tileOptions.size() - 1; 
+		if (tileOptionIndex < 0) {
+			tileOptionIndex = tileOptions.size() - 1;
 		}
 		game.scrollWheelInput = Game::ScrollWheel::None;
 	}
 	// update the tile preview to follow the mouse no matter where in the grid (now using worldmousepos instead of mousepos on screen)
-	if (!tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
+	if (tilemap.GetActiveLayerIndex() != 3 && !tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
 		sf::Sprite& previewTile = tileOptions[tileOptionIndex];
 		// use tilesize for all layers except for collision layer
 		float gridSize = (tilemap.GetActiveLayerIndex() != 3) ? tilemap.tileSize : tilemap.tileSize / 2.0f;
@@ -132,33 +145,73 @@ void LevelEdit::Update(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 	}
 }
 
-void LevelEdit::Draw(sf::RenderWindow& window, Game& game) {
-	// loop to validate size of tileOptions vector before setting values like positions
+void LevelEdit::Draw(sf::RenderWindow& window, Game& game, TileMap& tilemap) {
 	if (game.GetGameMode() == Game::LevelEditor) {
-		// draw leveleditor view
 		window.setView(view);
-		// validate and draw selected tile preview
-		if (!tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < static_cast<int>(tileOptions.size())) {
-			// set the preview tile to be drawn based on whatever index we have scrolled to in tileOptions
+
+		// Draw non-collision layers (Layer 1, 2, 3)
+		for (int layerIndex = 0; layerIndex < 3; ++layerIndex) {
+			const auto& layer = game.GetTileMap().GetTileMapLayer(layerIndex);
+			for (int y = 0; y < layer.size(); ++y) {
+				for (int x = 0; x < layer[y].size(); ++x) {
+					int tileID = layer[y][x];
+					if (tileID >= 0 && tileID < tileOptions.size()) {
+						sf::Sprite& tile = tileOptions[tileID];
+						tile.setPosition(x * tilemap.tileSize, y * tilemap.tileSize);
+						tile.setScale(tilemap.tileSize / 64.0f, tilemap.tileSize / 64.0f);
+
+						// Adjust transparency for merge layer view
+						if (showMergedLayers && layerIndex != game.GetTileMap().GetActiveLayerIndex()) {
+							tile.setColor(sf::Color(255, 255, 255, 150)); // Semi-transparent
+						}
+						else {
+							tile.setColor(sf::Color(255, 255, 255, 255)); // Fully opaque
+						}
+						window.draw(tile);
+					}
+				}
+			}
+		}
+
+		// draw the collision layer above all other layers
+		const auto& collisionLayer = game.GetTileMap().GetTileMapLayer(3);
+		for (int y = 0; y < collisionLayer.size(); ++y) {
+			for (int x = 0; x < collisionLayer[y].size(); ++x) {
+				if (collisionLayer[y][x] == 2) {
+					sf::RectangleShape collisionTile(sf::Vector2f(tilemap.tileSize / 2.0f, tilemap.tileSize / 2.0f));
+					collisionTile.setPosition(x * (tilemap.tileSize / 2.0f), y * (tilemap.tileSize / 2.0f));
+
+					// dynamic transparency for the collision layer
+					if (game.GetTileMap().GetActiveLayerIndex() == 3) {
+						collisionTile.setFillColor(sf::Color(255, 0, 0, 255)); // Fully opaque
+					}
+					else if (showMergedLayers) {
+						collisionTile.setFillColor(sf::Color(255, 0, 0, 150)); // Semi-transparent
+					}
+					else {
+						collisionTile.setFillColor(sf::Color(255, 0, 0, 150)); // Semi-transparent (default)
+					}
+
+					window.draw(collisionTile);
+				}
+			}
+		}
+
+		// Render preview options
+		if (!tileOptions.empty() && tileOptionIndex >= 0 && tileOptionIndex < tileOptions.size()) {
 			sf::Sprite& previewTile = tileOptions[tileOptionIndex];
-			// set tile preview image to world coords mouse position
-			previewTile.setPosition(window.mapPixelToCoords(sf::Mouse::getPosition(window), view));
+			previewTile.setPosition(worldMousePos.x, worldMousePos.y);
+			previewTile.setColor(sf::Color(255, 255, 255, 255)); // Fully opaque
+			previewTile.setScale(tilemap.tileSize / 64.0f, tilemap.tileSize / 64.0f);
 			window.draw(previewTile);
 		}
-	}
-	// iterate through each tile within the tiles vector of sprites and draw to application window
-	for (const sf::Sprite& tile : tiles) {
-		window.draw(tile);
-	}
-	// draw keybind overlay without resetting the view
-	if (showKeybindOverlay) {
-		// use default view for keybind overlay to keep it fixed in screen space
-		sf::View originalView = window.getView();
-		window.setView(window.getDefaultView());
-		window.draw(keybindText);
-		window.setView(originalView);
+
+		if (showKeybindOverlay) {
+			window.draw(keybindText);
+		}
 	}
 }
+
 
 
 void LevelEdit::CreateTile(const sf::Vector2f& position, TileMap& tilemap) {

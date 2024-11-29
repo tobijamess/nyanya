@@ -23,8 +23,17 @@ public:
 	void DrawAllLayers(sf::RenderWindow& window, Game& game, LevelEdit& leveledit);
 	void Draw(sf::RenderWindow& window, Game& game, LevelEdit& leveledit);
 	// getter function to return tileMap
-	std::vector<std::vector<int>>& GetTileMapLayer() {
+	std::vector<std::vector<int>>& GetActiveMapLayer() {
 		return *currentLayer;
+	}
+	const std::vector<std::vector<int>>& GetTileMapLayer(int layerIndex) const {
+		switch (layerIndex) {
+		case 0: return tileMap;
+		case 1: return tileMap2;
+		case 2: return tileMap3;
+		case 3: return collisionMap; // Optional
+		default: throw std::out_of_range("Invalid layer index");
+		}
 	}
 	int GetActiveLayerIndex() const {
 		return activeLayerIndex;

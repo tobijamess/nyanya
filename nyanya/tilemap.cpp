@@ -3,12 +3,12 @@
 #include "leveledit.h"
 
 void TileMap::Initialize(int width, int height) {
-	// initialize the tilemaps with default sizes and default values, set default tileID to 0 makes sure the tilemap is completely empty
-	tileMap = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
-    tileMap2 = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
-    tileMap3 = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
-	// initialize the collisionmap with x2 sizes (to choose quadrants of tiles that will be collidable), 1 makes sure they are walkable by default (no collision)
-	collisionMap = std::vector<std::vector<int>>(height * 2, std::vector<int>(width * 2, 1));
+    // initialize the tilemaps with default sizes and default values, set default tileID to 0 makes sure the tilemap is completely empty
+    tileMap = std::vector<std::vector<int>>(height, std::vector<int>(width, -1));
+    tileMap2 = std::vector<std::vector<int>>(height, std::vector<int>(width, -1));
+    tileMap3 = std::vector<std::vector<int>>(height, std::vector<int>(width, -1));
+    // initialize the collisionmap with x2 sizes (to choose quadrants of tiles that will be collidable), 1 makes sure they are walkable by default (no collision)
+    collisionMap = std::vector<std::vector<int>>(height * 2, std::vector<int>(width * 2, 1));
 }
 
 void TileMap::SwitchLayer(int layerIndex) {
@@ -95,7 +95,7 @@ void TileMap::DrawAllLayers(sf::RenderWindow& window, Game& game, LevelEdit& lev
                 }
             }
         }
-    };
+        };
     // draw each layer in order
     drawLayer(tileMap);
     drawLayer(tileMap2);
@@ -121,7 +121,7 @@ void TileMap::Draw(sf::RenderWindow& window, Game& game, LevelEdit& leveledit) {
                     }
                 }
             }
-        };
+            };
         // if active layer is not collision map layer
         if (activeLayerIndex != 3) {
             // use drawLayer helper func to draw current layer

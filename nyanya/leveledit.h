@@ -17,7 +17,7 @@ public:
 	void Initialize(Game& game);
 	void Load();
 	void Update(sf::RenderWindow& window, Game& game, TileMap& tilemap);
-	void Draw(sf::RenderWindow& window, Game& game);
+	void Draw(sf::RenderWindow& window, Game& game, TileMap& tilemap);
 	void ToggleKeybindOverlay();
 	std::vector<sf::Sprite>& GetTileOptions() {
 		return tileOptions;
@@ -43,5 +43,7 @@ private:
 	bool showKeybindOverlay = false;
 	sf::Font font;
 	sf::Text keybindText;
+	// variable to show the merged layer preview while in level editor
+	bool showMergedLayers = false;
 };
 #endif

@@ -25,13 +25,13 @@ void Game::Initialize() {
     // pass this instance of Game instead of creating a Game object and passing that, since that would create a new instance and cause infinite loop
     levelEdit.Initialize(*this);
     levelEdit.Load();
-	// initialize and load player data
+    // initialize and load player data
     player.Initialize();
     player.Load();
-	// initialize and load projectile data
+    // initialize and load projectile data
     projectile.Initialize();
     projectile.Load(player);
-	// initialize and load enemy data
+    // initialize and load enemy data
     enemy.Initialize();
     enemy.Load(enemy.GetType());
     // initialize and load enemymanager data
@@ -46,7 +46,7 @@ void Game::ProcessEvents() {
     sf::Event event;
     // set scroll wheel input to none by default
     scrollWheelInput = None;
-	// checking window events
+    // checking window events
     while (window.pollEvent(event)) {
         // if application window exit is pressed, close window
         switch (event.type) {
@@ -121,8 +121,8 @@ void Game::GameModeSelect() {
     static bool wasTPressed = false;
     // when T is pressed, toggle between gamemode play and leveleditor
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
-       // if you pressed T and it wasn't pressed last update frame, toggle to next gamemode
-       if (!wasTPressed){
+        // if you pressed T and it wasn't pressed last update frame, toggle to next gamemode
+        if (!wasTPressed) {
             if (gameMode == Play) {
                 gameMode = LevelEditor;
                 std::cout << "gamemode leveleditor\n";
@@ -131,22 +131,22 @@ void Game::GameModeSelect() {
                 gameMode = Play;
                 std::cout << "gamemode play\n";
             }
-       }
-       wasTPressed = true;
+        }
+        wasTPressed = true;
     }
     else {
         wasTPressed = false;
     }
 }
 
-void Game::Run() { 
+void Game::Run() {
     mainMenu = new cMainMenu();
     mainMenu->Initialize(window);
     pauseMenu = new cPauseMenu();
     pauseMenu->Initialize(window);
     // set current game state to main menu
     gameState = MainMenu;
-   
+
     while (window.isOpen()) {
         ProcessEvents();
         // restart the timer at the beginning of every window frame
@@ -193,7 +193,7 @@ void Game::Render() {
         }
         else if (gameMode == LevelEditor) {
             tilemap.Draw(window, *this, levelEdit);
-            levelEdit.Draw(window, *this);
+            levelEdit.Draw(window, *this, tilemap);
         }
         break;
     case PauseMenu:
@@ -204,6 +204,6 @@ void Game::Render() {
         // handle GameOver screen rendering
         break;
     }
-	// copy frame from back buffer to window/screen
+    // copy frame from back buffer to window/screen
     window.display();
 }
