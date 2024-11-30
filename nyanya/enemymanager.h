@@ -13,22 +13,20 @@ public:
     void Draw(sf::RenderWindow& window);
     void SpawnEnemy(Enemy::Type type);
     void RemoveEnemy(size_t index);
-    int GetMaxEnemies() {
-        return maxEnemies;
-    }
-    // getter function so player collision detection and collision detection can access activeEnemies
-    const std::vector<std::unique_ptr<Enemy>>& GetActiveEnemies() const {
-        return activeEnemies;
-    }
-    // getter function for the actual count of enemies for the loop that fills enemy count in game.cpp
-    int GetActiveEnemiesCount() const {
-        return activeEnemies.size();
-    }
+    // getter function to return the value that represents the maximum number of enemies that can exist, used in Game::Initialize/Update
+    int GetMaxEnemies() { return maxEnemies; }
+    // getter function to return activeEnenmies so player collision detection and collision detection can access it
+    const std::vector<std::unique_ptr<Enemy>>& GetActiveEnemies() const { return activeEnemies; }
+    // getter function to return the amount of enemies for a loop that fills the active enemy count in Game::UpdatePlay
+    int GetActiveEnemiesCount() const { return activeEnemies.size(); }
 private:
-    // use pointers so enemy objects arent copied (so the same instance is updated and rendered so hitboxes work for every enemy)
+    // use pointers so Enemy objects arent copied (so the same Enemy instance is updated and rendered each time) (makes sure hitboxes work for every enemy)
     std::vector<std::unique_ptr<Enemy>> activeEnemies;
-    TileMap* tileMap; // pointer to the tile map
+    // pointer to TileMap class to get tile sizes and tilemap functions for EnemyManager::GetRandomTilePosition function
+    TileMap* tileMap;
+    // value that corresponds to the maximum amount of enemies that can exist
     int maxEnemies = 20;
+    // create instance of the standard random number generator class for use in EnemyManager::GetRandomTilePosition function
     std::default_random_engine rng;
     sf::Vector2f GetRandomTilePosition();
 };

@@ -11,7 +11,7 @@ void Player::Move(const sf::Vector2f& offset) {
 }
 
 void Player::Initialize() {
-	// initialize and set the size of playerSprite to 64x64 (pixel size of sprite)
+	// initialize and set the size of playerSprite to 64x64px's
 	size = sf::Vector2i(64, 64);
 	// initialize/set features for the hitbox(circleshape)
 	hitbox.setFillColor(sf::Color::Transparent);
@@ -36,8 +36,7 @@ void Player::Load() {
 		// use setTexture function to set the sprite to texture (which holds the .png)
 		sprite.setTexture(texture);
 		// function to put rectangle (sf::IntRect) over the pixels you want to select for drawing within the texture by setting x, y and width/height (all integers)
-		// xIndex is sprite position in the row, yIndex is sprite position in column, is multiplied by 64 so the rectangle can move over/down 1 sprite at a time
-		// all player sprites are 64x64 so rectWidth and rectHeight stay at 64, 64
+		// xIndex is sprite position in the row, yIndex is sprite position in column, is multiplied by player sprite size so the rectangle can move over and down 1 sprite at a time
 		sprite.setTextureRect(sf::IntRect(xIndex * size.x, yIndex * size.y, size.x, size.y));
 		// set player to a specific grid position
 		int gridX = 2;
@@ -47,8 +46,7 @@ void Player::Load() {
 		// multiplies the current scale of sprite object (make sprite bigger)
 		sf::Vector2f scaleFactor = sf::Vector2f(3.0f, 3.0f);
 		sprite.setScale(scaleFactor);
-		sprite.setOrigin(static_cast<float>(size.x) / 2.0f,
-			static_cast<float>(size.y) / 2.0f);
+		sprite.setOrigin(static_cast<float>(size.x) / 2.0f, static_cast<float>(size.y) / 2.0f);
 	}
 	else {
 		// failed load
@@ -62,7 +60,7 @@ void Player::Load() {
 void Player::Update(Player& player, EnemyManager& enemymanager, float deltaTime) {
 	// create movement vector2f to store the values produced by the keyboard presses which are based on the x and y axis
 	sf::Vector2f movement(0.0f, 0.0f);
-	
+
 	// check each of the movement keys for presses and adjust the movement vector2f
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		// movement.y = movement.y - 1.0f
@@ -98,7 +96,7 @@ void Player::Update(Player& player, EnemyManager& enemymanager, float deltaTime)
 	}
 	// bool variable to check if the player is moving for use in util.cpp collision function
 	bool isMoving = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
-					 sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::D));
+		sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::D));
 
 	// call move function with all movement and collision variables taken into account
 	Move(movement * playerSpeed * deltaTime);

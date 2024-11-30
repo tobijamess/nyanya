@@ -25,33 +25,26 @@ public:
         Settings,
         GameOver
     };
-    // getter function for use in switch cases in ProcessEvents()
-    GameState GetGameState() const {
-        return gameState;
-    }
-    // enum which holds both game modes
+    // enum to hold both game modes
     enum GameMode {
         Play,
         LevelEditor
     };
-    // getter function for use in leveledit's Update() function
-    GameMode GetGameMode() const {
-        return gameMode;
-    }
-    // enum to hold different scroll wheel directions
+    // getter function to return current gameMode for use in LevelEdit::Update function
+    GameMode GetGameMode() const { return gameMode; }
+    // enum to hold different scroll wheel states
     enum ScrollWheel {
         ScrollUp,
         ScrollDown,
         None
     };
-    ScrollWheel scrollWheelInput; 
+    // enum object to update scroll wheel states, used in LevelEdit::Update and Game::ProcessEvents functions
+    ScrollWheel scrollWheelInput;
     sf::RenderWindow window;
-    // tilemap getter function
-    TileMap& GetTileMap() {
-        return tilemap;
-    }
+    // getter function to return the current TileMap instance
+    TileMap& GetTileMap() { return tilemap; }
 private:
-    // object initialization
+    // class instances
     sf::Clock clock;
     sf::View view;
     Player player;
@@ -62,16 +55,13 @@ private:
     EnemyManager enemymanager;
     cMainMenu* mainMenu;
     cPauseMenu* pauseMenu;
-
-    // for enemy spawning
+    // variable to track the time since the last enemy was spawned
     float timeSinceLastSpawn = 0.0f;
-    float spawnInterval = 10.0f; // spawn every 1 second
-
-    // enum object to initialize gamemodes
+    // enum object to initialize and update gamemodes
     GameMode gameMode;
-    // enum object to initialize gamestates
+    // enum object to initialize and update gamestates
     GameState gameState;
-    
+
     void Initialize();
     void ProcessEvents();
     void UpdatePlay(float deltaTime);
@@ -89,7 +79,7 @@ private:
     sf::RectangleShape background;
 public:
     void Initialize(sf::RenderWindow& window) {
-        // initialize a background rectangle with a default color CHANGE TO SPRITE OR BACKGROUND IMAGE LATER
+        // initialize a background rectangle with a default color CHANGE TO SPRITE OR BACKGROUND IMAGE LATER 
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)));
         background.setFillColor(sf::Color(50, 50, 50));
         // load fonts and font settings
@@ -108,27 +98,28 @@ public:
         exitButton.setPosition(100, 300);
         exitButton.setFillColor(sf::Color::White);
     }
+
     void HandleInput(sf::RenderWindow& window, Game::GameState& currentstate) {
-        // check if lmb is pressed
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-            // get mouse pos in window and then get mouse pos in world coords
+            // get mouse position in window coordinates and convert to mouse position in world coordinates
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePos);
-            // if the boundary of the play button contains the mouse
+            // check if the mouse position in world coordinates is within the play buttons boundaries when the left mouse button was clicked, if it was, update the current game state to 'Playing'
             if (playButton.getGlobalBounds().contains(mouseWorldPos)) {
-                // change game state to playing
                 currentstate = Game::Playing;
             }
             /*else if (settingsButton.getGlobalBounds().contains(mouseWorldPos)) {
                 currentstate = Game::Settings;
             }*/
+            // same check as the play button but for the exit buttons boundaries, if it was, close the window
             else if (exitButton.getGlobalBounds().contains(mouseWorldPos)) {
                 window.close();
             }
         }
-        
     }
+
     void Draw(sf::RenderWindow& window) {
+        // draw the main menus elements in order so buttons are above the background
         window.draw(background);
         window.draw(playButton);
         // window.draw(settingsButton);
@@ -145,7 +136,6 @@ private:
     sf::RectangleShape background;
 public:
     void Initialize(sf::RenderWindow& window) {
-        // initialize a background rectangle with a default color CHANGE TO SPRITE OR BACKGROUND IMAGE LATER
         background.setSize(sf::Vector2f(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y)));
         background.setFillColor(sf::Color(50, 50, 50));
         font.loadFromFile("assets/fonts/font.ttf");
@@ -160,6 +150,7 @@ public:
         mainMenuButton.setPosition(100, 200);
         mainMenuButton.setFillColor(sf::Color::White);
     }
+
     void HandleInput(sf::RenderWindow& window, Game::GameState& currentstate) {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -172,6 +163,7 @@ public:
             }
         }
     }
+
     void Draw(sf::RenderWindow& window) {
         window.draw(background);
         window.draw(resumeButton);

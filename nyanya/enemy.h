@@ -6,11 +6,10 @@
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
-// see player.h for commenting
 class Enemy {
 public:
 	// placeholder enemy types
-	enum class Type { Basic, Advanced, Boss};
+	enum class Type { Basic, Advanced, Boss };
 	int health = 100;
 	int xIndex = 0;
 	int yIndex = 0;
@@ -18,7 +17,7 @@ public:
 	sf::CircleShape hitbox;
 	sf::Vector2i size;
 	Type type;
-	// getter func for function call params
+	// getter function for use in Game::Initialize
 	Type GetType() {
 		return type;
 	}

@@ -9,19 +9,18 @@
 #include "tilemap.h"
 
 class Game;
+class TileMap;
 
 class LevelEdit {
 public:
-	void CreateTile(const sf::Vector2f& position, TileMap& tilemap);
-	void RemoveTile(const sf::Vector2f& position, TileMap& tilemap);
 	void Initialize(Game& game);
 	void Load();
 	void Update(sf::RenderWindow& window, Game& game, TileMap& tilemap);
 	void Draw(sf::RenderWindow& window, Game& game, TileMap& tilemap);
-	void ToggleKeybindOverlay();
-	std::vector<sf::Sprite>& GetTileOptions() {
-		return tileOptions;
-	}
+	void CreateTile(const sf::Vector2f& position, TileMap& tilemap);
+	void RemoveTile(const sf::Vector2f& position, TileMap& tilemap);
+	// tileOptions getter used in TileMap::DrawAllLayers/Draw functions 
+	std::vector<sf::Sprite>& GetTileOptions() { return tileOptions; }
 private:
 	int tileOptionIndex;
 	sf::Texture texture;
@@ -37,8 +36,6 @@ private:
 	sf::Vector2f worldMousePos;
 	// bool for if user is dragging mouse while holding mmb
 	bool isDragging = false;
-	// tile preview position
-	sf::Vector2f tilePreviewPos;
 	// variables/objects for the keybind overlay while in level editor 
 	bool showKeybindOverlay = false;
 	sf::Font font;

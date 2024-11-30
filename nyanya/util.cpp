@@ -1,3 +1,4 @@
+
 #include "util.h"
 #include <cmath>
 
@@ -91,7 +92,7 @@ bool Util::ProjectileCollision(const sf::CircleShape& projHitbox, const sf::Circ
 		if (distance < collisionBoundary) {
 		}
 		return true;
-	} 
+	}
 	return false;
 }
 

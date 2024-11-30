@@ -25,7 +25,6 @@ public:
 	// player speed value
 	float playerSpeed = 500.0f;
 	bool isMoving;
-	
 private:
 	// create texture object to hold .png image
 	sf::Texture texture;
@@ -36,7 +35,5 @@ public:
 	void Update(Player& player, EnemyManager& enemymanager, float deltaTime);
 	void Draw(sf::RenderWindow& window);
 	void Move(const sf::Vector2f& offset);
-private:
-
 };
 #endif

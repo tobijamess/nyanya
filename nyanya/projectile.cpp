@@ -1,9 +1,10 @@
+
 #include "projectile.h"
 #include "util.h"
 
 void Projectile::Initialize() {
 	// initialize projectile size (size of image in pixels)
-	projSize = sf::Vector2i(64, 64);	
+	projSize = sf::Vector2i(64, 64);
 	// initialize/set features for the hitbox(hitbox)
 	projData.hitbox.setFillColor(sf::Color::Transparent);
 	projData.hitbox.setOutlineColor(sf::Color::Red);
@@ -40,7 +41,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, EnemyManager& 
 	// if left mouse button is pressed, and the time since the last projectile was created is longer than the cooldown, execute following code
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && timeSinceLastProjectile >= cooldown) {
 		// reset the timer
-		timeSinceLastProjectile = 0.0f; 
+		timeSinceLastProjectile = 0.0f;
 		// create a new sprite variable (newProjectile)
 		sf::Sprite newProjectile = sprite;
 		// set the newProjectile variable to the players sprite positon
@@ -50,7 +51,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, EnemyManager& 
 		sf::CircleShape newHitbox = projData.hitbox;
 		// set the newHitbox variable to the players sprite positon
 		newHitbox.setPosition(player.sprite.getPosition());
-		
+
 		// create temp vector2f mousePosition object for vector2i -> vector2f conversion
 		// use static_cast to forcefully convert the vector2i's data (current mouse position) into the temporary mousePosition vector2f object
 		sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -80,7 +81,7 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, EnemyManager& 
 
 		for (const auto& enemy : enemymanager.GetActiveEnemies()) {
 			// collision detection
-			if (Util::ProjectileCollision(playerProjectiles[i].hitbox, enemy->hitbox) ) {
+			if (Util::ProjectileCollision(playerProjectiles[i].hitbox, enemy->hitbox)) {
 				// reduce enemy health by 25 on projectile collision
 				enemy->health -= 25;
 				// collision working
@@ -92,11 +93,6 @@ void Projectile::Update(sf::RenderWindow& window, Player& player, EnemyManager& 
 				break;
 			}
 		}
-		// lifetime * deltaTime? FIX LATER
-		/*if (playerProjectiles[i].lifetime * deltaTime > playerProjectiles[i].lifetime) {
-			playerProjectiles[i] = playerProjectiles.back();
-			playerProjectiles.pop_back();
-		}*/
 	}
 }
 
